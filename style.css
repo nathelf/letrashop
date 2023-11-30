@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.preview {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+	font-size: 30px;
+    color: black; /* Cor do texto definida aqui */
+}
+
+.price {
+    margin-top: 10px;
+}
+
+/* Estilos gerais */
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+/* Estilos para o campo de texto */
+.form-group input[type="text"] {
+    width: 100%; /* Faz com que o campo de texto ocupe toda a largura do container */
+    max-width: 100%; /* Impede que o campo de texto ultrapasse a largura do container */
+    box-sizing: border-box; /* Garante que o padding e border do elemento sejam incluídos na largura total */
+    margin-bottom: 10px; /* Espaçamento entre os campos */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+}
+
+/* Estilos para a área de visualização */
+.preview {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+#previewText {
+    word-wrap: break-word; /* Quebra as palavras para evitar overflow */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .preview {
+        margin: 20px 0;
+    }
+}
+
