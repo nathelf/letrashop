@@ -1,0 +1,98 @@
+{
+  "MAIN_FORM": {
+    "TITLE": "Letras shop",
+    "CARDS": {
+      "UNIT_PRICE": {
+        "TITLE": "Preço unitário",
+        "DESCRIPTION": "Preço por caractere",
+        "VALUE": "R$ 6,90"
+      },
+      "SHIPPING_COST": {
+        "TITLE": "Frete",
+        "DESCRIPTION": "Valor do frete"
+      },
+      "SUBTOTAL": {
+        "TITLE": "Subtotal",
+        "DESCRIPTION": "Preço total dos caracteres"
+      },
+      "TOTAL": {
+        "TITLE": "Total",
+        "DESCRIPTION": "Preço total do pedido"
+      }
+    },
+    "LABELS": {
+      "LETTERS": "Letras",
+      "FONT_TYPE": "Tipo de letra",
+      "FONT_SIZE": "Tamanho de letra",
+      "FONT_COLOR": "Cor de letra",
+      "ZIP_CODE": "CEP",
+      "PRICE": "Preço por letra",
+      "SUBTOTAL": "Subtotal",
+      "SHIPPING_COST": "Frete",
+      "TOTAL": "Preço total",
+      "VISUALIZATION": "Visualização"
+    },
+    "PLACEHOLDERS": {
+      "ZIP_CODE": "Digite o CEP",
+      "LETTERS": "Informe as letras/números",
+      "FONT_COLOR": "Selecione a cor de letra",
+      "FONT_SIZE": "Selecione o tamanho de letra",
+      "FONT_TYPE": "Selecione o tipo de letra"
+    },
+    "VALUES": {
+      "FONT_TYPE": {
+        "TYPE_1": {
+          "KEY": "CLASSIC",
+          "VALUE": "Clássica"
+        },
+        "TYPE_2": {
+          "KEY": "MODERN",
+          "VALUE": "Moderna"
+        }
+      },
+      "FONT_SIZE": {
+        "SIZE_1": {
+          "KEY": "30",
+          "VALUE": "30mm"
+        },
+        "SIZE_2": {
+          "KEY": "130",
+          "VALUE": "130mm"
+        },
+        "SIZE_3": {
+          "KEY": "180",
+          "VALUE": "180mm"
+        }
+      },
+      "FONT_COLOR": {
+        "COLOR_1": {
+          "KEY": "BLACK",
+          "VALUE": "Preto"
+        },
+        "COLOR_2": {
+          "KEY": "WHITE",
+          "VALUE": "Branco"
+        },
+        "COLOR_3": {
+          "KEY": "BRUSHED_GOLD",
+          "VALUE": "Ouro escovado"
+        },
+        "COLOR_4": {
+          "KEY": "MIRRORED_GOLD",
+          "VALUE": "Ouro espelhado"
+        },
+        "COLOR_5": {
+          "KEY": "BRUSHED_SILVER",
+          "VALUE": "Prata escovado"
+        },
+        "COLOR_6": {
+          "KEY": "MIRRORED_SILVER",
+          "VALUE": "Prata espelhado"
+        }
+      }
+    },
+    "ACTIONS": {
+      "MAKE_ORDER": "Fazer pedido"
+    }
+  }
+}
