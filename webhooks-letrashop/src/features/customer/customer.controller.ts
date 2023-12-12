@@ -4,10 +4,10 @@ import storeService from "./customer.service";
 class StoreController {
   async redact(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = storeService.data_request(req.body.store_id, req);
+      const data = await storeService.data_request(req.body.store_id, req);
 
       if (data.status !== 200) {
-        throw new Error(data.message);
+        throw new Error("error: on delete the registers");
       }
     } catch (error) {
       next(error);
@@ -16,11 +16,13 @@ class StoreController {
 
   async data_request(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = storeService.data_request(req.body.store_id, req);
+      const data = await storeService.data_request(req.body, req);
 
       if (data.status !== 200) {
-        throw new Error(data.message);
+        throw new Error("error: on delete the registers");
       }
+
+      return res.status(200).json(data);
     } catch (error) {
       next(error);
     }

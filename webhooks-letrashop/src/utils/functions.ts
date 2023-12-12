@@ -8,13 +8,20 @@ import crypto from "crypto";
  * @returns {boolean} Se o webhook é válido
  **/
 export function verifyWebhook(data: any, hmacHeader: any): boolean {
-  console.log(process.env.REACT_APP_SCRECT);
+  console.log(hmacHeader);
+
+  console.log(
+    crypto
+      .createHmac("sha256", process.env.REACT_APP_CLIENT_SECRET as string)
+      .update(JSON.stringify(data))
+      .digest("hex")
+  );
 
   return (
     hmacHeader ===
     crypto
-      .createHmac("sha256", process.env.REACT_APP_SCRECT as string)
-      .update(data)
+      .createHmac("sha256", process.env.REACT_APP_CLIENT_SECRET as string)
+      .update(JSON.stringify(data))
       .digest("hex")
   );
 }

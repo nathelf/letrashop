@@ -4,7 +4,7 @@ import storeService from "./store.service";
 class StoreController {
   async redact(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = storeService.redact(req.body.store_id, req);
+      const data = await storeService.redact(req.body.store_id, req);
 
       if (data.status !== 200) {
         throw new Error(data.message);
