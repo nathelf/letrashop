@@ -7,10 +7,6 @@ import morgan from "morgan";
 import { AppRoutes } from "./config";
 import bodyParser from "body-parser";
 
-console.log(path.resolve(".env"));
-
-console.log(process.env);
-
 const port = process.env.PORT || 7200;
 const app = express();
 
