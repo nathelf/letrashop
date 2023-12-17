@@ -79,7 +79,7 @@ function App() {
             />
             <CardItem
               title={I18n.MAIN_FORM.CARDS.SUBTOTAL.TITLE}
-              text={formatMoney(quantity)}
+              text={formatMoney(quantity * 6.9)}
               observation={I18n.MAIN_FORM.CARDS.SUBTOTAL.DESCRIPTION}
             />
             <CardItem

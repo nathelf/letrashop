@@ -34,14 +34,15 @@ type FormContextData = {
 const FormContext = createContext({} as FormContextData);
 
 const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
-  const [letters, setLetters] = useState<string>("ABC-1");
+  const [letters, setLetters] = useState<string>("");
   const [products, setProducts] = useState<ProductList>([]);
   const [cep, setCep] = useState<string>("");
   const [color, setColor] = useState<string>("Preto");
   const [size, setSize] = useState<string>("30mm");
   const [type, setType] = useState<string>("Clássica");
   const [quantity, setQuantity] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
+  // O total inicial é o frete fixo de R$ 15,00 + o valor de uma letra (R$ 6,90)
+  const [total, setTotal] = useState<number>(15 + 27.6);
   const [shippingCost, setShippingCost] = useState<number>(15);
 
   const [chart, setChart] = useState<ProductList>([]);
@@ -51,6 +52,13 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
       setProducts(response);
     });
   }, []);
+
+  useEffect(() => {
+    // ignora todos os espaços em branco
+    let lettersFiltered = letters.replace(/\s/g, "");
+    setQuantity(lettersFiltered.length);
+    setTotal(lettersFiltered.length * 6.9 + shippingCost);
+  }, [chart]);
 
   const contextValue = {
     letters,

@@ -5,8 +5,6 @@ import { Separator } from "./ui/separator";
 import { useEffect, useState } from "react";
 import { useFormContext } from "../context/useFormContext";
 
-import Wheel from "@uiw/react-color-wheel";
-import { hsvaToHex } from "@uiw/color-convert";
 import { ColorPickerDialog } from "./ColorPickerDialog";
 
 type ChartsVisualizationProps = {
@@ -18,27 +16,57 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   products,
   letters,
 }) => {
-  const { color, chart, setChart } = useFormContext();
+  const { color, chart, setChart, setLetters } = useFormContext();
   const [colorBackground, setColorBackGround] = useState("#FFF");
 
   useEffect(() => {
-    // find the products that contains 'ouro espelhado'
-
     let productsFiltered = products.filter((product) => {
       return product.name.pt.toLowerCase().includes(color.toLowerCase());
     });
 
     let productsSelected: ProductList = [];
+
     [...letters].map((letter, index) => {
-      productsFiltered.map((product) => {
-        if (letter === product.name.pt.split("-")[1]) {
-          productsSelected.push(product);
-        }
-      });
+      if (letter !== " ") {
+        productsFiltered.map((product) => {
+          if (letter === product.name.pt.split("-")[1]) {
+            productsSelected.push(product);
+          }
+        });
+      } else {
+        productsSelected.push({
+          id: -1,
+          name: { pt: " " },
+          description: { pt: " " },
+          handle: { pt: " " },
+          attributes: [],
+          published: true,
+          free_shipping: true,
+          requires_shipping: true,
+          canonical_url: "",
+          video_url: null,
+          seo_title: { pt: null },
+          seo_description: { pt: null },
+          brand: null,
+          created_at: "",
+          updated_at: "",
+          variants: [],
+          tags: "",
+          images: [],
+          categories: [],
+        });
+      }
     });
 
+    console.log(productsSelected);
     setChart(productsSelected);
   }, [letters, color]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLetters("1234");
+    }, 1000);
+  }, []);
 
   return (
     <Card>
@@ -51,18 +79,32 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
       </CardHeader>
 
       <Separator />
-      <CardContent className="flex flex-1 max-w-[800px] h-full min-h-[250px] justify-center items-center break-words gap-6">
-        <div className="flex flex-wrap">
+      <CardContent
+        className="flex flex-1 max-w-[800px] h-full min-h-[250px] justify-center items-center break-words gap-6"
+        style={{ background: colorBackground }}
+      >
+        <div className="flex flex-wrap flex-row">
           {chart.length > 0
             ? chart.map((product, index) => {
-                return (
-                  <img
-                    key={index}
-                    src={product.images[0].src}
-                    alt={product.name.pt}
-                    className="w-[60px] h-[60px] p-1"
-                  />
-                );
+                if (product.id === -1) {
+                  return (
+                    <div
+                      key={index}
+                      className="w-[60px] h-[60px] p-1 flex justify-center items-center"
+                    >
+                      <span className="text-2xl"> </span>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <img
+                      key={index}
+                      src={product.images[0].src}
+                      alt={product.name.pt}
+                      className="w-[60px] h-[60px] p-1"
+                    />
+                  );
+                }
               })
             : null}
         </div>
