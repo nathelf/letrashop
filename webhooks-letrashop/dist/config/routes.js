@@ -7,4 +7,6 @@ const routes = (0, express_1.Router)();
 routes.get("/store/redact", store_1.storeController.redact);
 routes.get("/customers/redact", customer_1.customerController.redact);
 routes.get("/customers/data_request", customer_1.customerController.data_request);
+routes.post("/app/authorize", store_1.storeController.authorize);
+routes.get("/products", store_1.storeController.products);
 exports.default = routes;

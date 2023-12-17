@@ -4,6 +4,7 @@ import { IStoreRequest } from "./interfaces";
 import { Request } from "express";
 import { firebase } from "../../config";
 import { deleteObject, getStorage, ref } from "firebase/storage";
+import axios from "axios";
 
 class StoreService {
   async redact(store_id: IStoreRequest, req: Request) {
@@ -56,6 +57,51 @@ class StoreService {
       status: 200,
       message: "success: the store: " + store_id + " was deleted",
     };
+  }
+
+  async authorize(
+    body: {
+      client_id: string;
+      client_secret: string;
+      grant_type: string;
+      code: string;
+    },
+    res: Request
+  ) {
+    try {
+      const data = await axios
+        .post("https://www.nuvemshop.com.br/apps/authorize/token", {
+          ...body,
+        })
+        .then((response) => {
+          return response.data;
+        })
+        .catch((error) => {
+          throw new Error(error.message);
+        });
+
+      return {
+        status: 200,
+        data,
+      };
+    } catch (error: any) {
+      throw new Error(error.message);
+    }
+  }
+
+  async products() {
+    const { data } = await axios
+      .get("https://api.nuvemshop.com.br/v1/3855430/products?per_page=200", {
+        headers: {
+          Authentication: "bearer 1486b05f1169add8ab918d20d5da590c2f182c58",
+        },
+      })
+      .catch((error) => {
+        console.log(error);
+        throw new Error(error.message);
+      });
+
+    return data;
   }
 }
 

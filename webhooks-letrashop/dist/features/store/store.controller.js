@@ -18,9 +18,29 @@ class StoreController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = yield store_service_1.default.redact(req.body.store_id, req);
-                if (data.status !== 200) {
-                    throw new Error(data.message);
-                }
+                return res.status(200).json(data);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    authorize(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = yield store_service_1.default.authorize(req.body, req);
+                return res.status(200).json(data);
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    products(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = yield store_service_1.default.products();
+                return res.status(200).json(data);
             }
             catch (error) {
                 next(error);

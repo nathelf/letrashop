@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const firestore_1 = require("firebase/firestore");
 const functions_1 = require("../../utils/functions");
 const config_1 = require("../../config");
 const storage_1 = require("firebase/storage");
+const axios_1 = __importDefault(require("axios"));
 class StoreService {
     redact(store_id, req) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -52,6 +56,42 @@ class StoreService {
                 status: 200,
                 message: "success: the store: " + store_id + " was deleted",
             };
+        });
+    }
+    authorize(body, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const data = yield axios_1.default
+                    .post("https://www.nuvemshop.com.br/apps/authorize/token", Object.assign({}, body))
+                    .then((response) => {
+                    return response.data;
+                })
+                    .catch((error) => {
+                    throw new Error(error.message);
+                });
+                return {
+                    status: 200,
+                    data,
+                };
+            }
+            catch (error) {
+                throw new Error(error.message);
+            }
+        });
+    }
+    products() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data } = yield axios_1.default
+                .get("https://api.nuvemshop.com.br/v1/3855430/products?per_page=200", {
+                headers: {
+                    Authentication: "bearer 1486b05f1169add8ab918d20d5da590c2f182c58",
+                },
+            })
+                .catch((error) => {
+                console.log(error);
+                throw new Error(error.message);
+            });
+            return data;
         });
     }
 }

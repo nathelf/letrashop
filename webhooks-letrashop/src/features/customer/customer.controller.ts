@@ -6,9 +6,7 @@ class StoreController {
     try {
       const data = await storeService.data_request(req.body.store_id, req);
 
-      if (data.status !== 200) {
-        throw new Error("error: on delete the registers");
-      }
+      return res.status(200).json(data);
     } catch (error) {
       next(error);
     }

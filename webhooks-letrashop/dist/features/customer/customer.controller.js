@@ -18,9 +18,7 @@ class StoreController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = yield customer_service_1.default.data_request(req.body.store_id, req);
-                if (data.status !== 200) {
-                    throw new Error("error: on delete the registers");
-                }
+                return res.status(200).json(data);
             }
             catch (error) {
                 next(error);
