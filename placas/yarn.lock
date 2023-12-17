@@ -2655,6 +2655,50 @@
     "@typescript-eslint/types" "5.62.0"
     eslint-visitor-keys "^3.3.0"
 
+"@uiw/color-convert@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@uiw/color-convert/-/color-convert-2.0.3.tgz#85cc010b3350aa3b7223bc6637bcbdbdca8a53b8"
+  integrity sha512-lP/dnZzaiUDMrn3F+WYAG/TLhIanoy5A0HAPEO6Z/s3Jv5AI0nOM2bVOm0HI+vNiHZkVTkE1oGP0k+endEA+9A==
+
+"@uiw/react-color-alpha@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@uiw/react-color-alpha/-/react-color-alpha-2.0.3.tgz#7f9dc53764e69eebb067bfff4ab543272c9c36ea"
+  integrity sha512-bTO0jMTT2fFZr8lGpDrOCbMSbidkgYMuCmyc6A8p6WfyCznKZvKG5WG9KukDOB2ReJUZKIaiR20CgUa6opS3Hw==
+  dependencies:
+    "@uiw/color-convert" "2.0.3"
+    "@uiw/react-drag-event-interactive" "2.0.3"
+
+"@uiw/react-color-colorful@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@uiw/react-color-colorful/-/react-color-colorful-2.0.3.tgz#cf7d04e28086019bcd4e8a1d479ad641e8f3b200"
+  integrity sha512-IjnvYyroW/Kmz1ICSwQ6HUpl7cs6Rkh2mVuFGvYd8FOxBjbQuAI/pfVi8I54rgkesn8uRVYlbvl4ROfAl3RrHw==
+  dependencies:
+    "@uiw/color-convert" "2.0.3"
+    "@uiw/react-color-alpha" "2.0.3"
+    "@uiw/react-color-hue" "2.0.3"
+    "@uiw/react-color-saturation" "2.0.3"
+
+"@uiw/react-color-hue@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@uiw/react-color-hue/-/react-color-hue-2.0.3.tgz#d3b1f5c6b216ae14c593e261af762e27627da48b"
+  integrity sha512-Bi9/JkLH6FSxULC52y7kjLlunkRbL6TRuAzm5+BBs/4tSf+VL8Xp5Dr2gCPJG1vuA4ohDx9vl3P5QO4Rk9h8wQ==
+  dependencies:
+    "@uiw/color-convert" "2.0.3"
+    "@uiw/react-color-alpha" "2.0.3"
+
+"@uiw/react-color-saturation@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@uiw/react-color-saturation/-/react-color-saturation-2.0.3.tgz#91efd2941f238e6ec51b5983f05108d7a606945b"
+  integrity sha512-+AZM3WemWv7w/uRGmSY5lXWdSJoKKysKMW+C7/qkWNQmN/WjG6YmC4ZtcEqPr7BbWFXSS2DJTn15fNBvxCFKDg==
+  dependencies:
+    "@uiw/color-convert" "2.0.3"
+    "@uiw/react-drag-event-interactive" "2.0.3"
+
+"@uiw/react-drag-event-interactive@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@uiw/react-drag-event-interactive/-/react-drag-event-interactive-2.0.3.tgz#cfe614cbbc4e73d58236a0a1f83c5904355a0cbc"
+  integrity sha512-r9VQbvpk2z0ux3GenmT5K4BVQqT91eBSDQjYuR43Ya0kJaD2yJPuPe8JqvKTFR3/C9kldolJoWbxl0mbuu1X0w==
+
 "@ungap/structured-clone@^1.2.0":
   version "1.2.0"
   resolved "https://registry.npmjs.org/@ungap/structured-clone/-/structured-clone-1.2.0.tgz"
@@ -3141,6 +3185,15 @@ axe-core@=4.7.0:
   version "4.7.0"
   resolved "https://registry.npmjs.org/axe-core/-/axe-core-4.7.0.tgz"
   integrity sha512-M0JtH+hlOL5pLQwHOLNYZaXuhqmvS8oExsqB1SBYgA4Dk7u/xx+YdGHXaK5pyUfed5mYXdlYiphWq3G8cRi5JQ==
+
+axios@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.2.tgz#de67d42c755b571d3e698df1b6504cde9b0ee9f2"
+  integrity sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 axobject-query@^3.2.1:
   version "3.2.1"
@@ -5025,7 +5078,7 @@ flatted@^3.2.9:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.9.tgz"
   integrity sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==
 
-follow-redirects@^1.0.0:
+follow-redirects@^1.0.0, follow-redirects@^1.15.0:
   version "1.15.3"
   resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.3.tgz"
   integrity sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==
@@ -5060,6 +5113,15 @@ form-data@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npmjs.org/form-data/-/form-data-3.0.1.tgz"
   integrity sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    mime-types "^2.1.12"
+
+form-data@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/form-data/-/form-data-4.0.0.tgz#93919daeaf361ee529584b9b31664dc12c9fa452"
+  integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"
@@ -8031,6 +8093,11 @@ proxy-addr@~2.0.7:
   dependencies:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
+
+proxy-from-env@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
+  integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
 
 psl@^1.1.33:
   version "1.9.0"

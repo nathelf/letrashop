@@ -11,17 +11,25 @@ import {
 import { I18n } from "../assets/resources";
 import { useState } from "react";
 import { cepMask } from "../lib/utils";
+import { ChartsVisualization } from "./ChatsVisualization";
+import { ProductList } from "../types/types";
+import { useFormContext } from "../context/useFormContext";
 
-// TODO: Colocar isso num contexto ou refatorar
-type PageFormFieldsProps = {
-  letters: string;
-  setLetters: React.Dispatch<React.SetStateAction<string>>;
-};
+export const PageFormFields: React.FC = () => {
+  const {
+    letters,
+    total,
+    quantity,
+    shippingCost,
+    products,
+    setLetters,
+    setType,
+    type,
+    setColor,
+    size,
+    setSize,
+  } = useFormContext();
 
-export const PageFormFields: React.FC<PageFormFieldsProps> = ({
-  letters,
-  setLetters,
-}) => {
   const FONT_TYPE = I18n.MAIN_FORM.VALUES.FONT_TYPE;
   const FONT_SIZE = I18n.MAIN_FORM.VALUES.FONT_SIZE;
   const FONT_COLOR = I18n.MAIN_FORM.VALUES.FONT_COLOR;
@@ -34,7 +42,11 @@ export const PageFormFields: React.FC<PageFormFieldsProps> = ({
         <div className="grid w-full items-center gap-4">
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="fontType">{I18n.MAIN_FORM.LABELS.FONT_TYPE}</Label>
-            <Select>
+            <Select
+              onValueChange={(e) => {
+                setType(e);
+              }}
+            >
               <SelectTrigger id="fontType'">
                 <SelectValue
                   placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_TYPE}
@@ -42,7 +54,7 @@ export const PageFormFields: React.FC<PageFormFieldsProps> = ({
               </SelectTrigger>
               <SelectContent position="popper">
                 {Object.values(FONT_TYPE).map((item) => (
-                  <SelectItem key={item.KEY} value={item.KEY}>
+                  <SelectItem key={item.KEY} value={item.VALUE}>
                     {item.VALUE}
                   </SelectItem>
                 ))}
@@ -52,7 +64,11 @@ export const PageFormFields: React.FC<PageFormFieldsProps> = ({
 
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="fontType">{I18n.MAIN_FORM.LABELS.FONT_SIZE}</Label>
-            <Select>
+            <Select
+              onValueChange={(e) => {
+                setSize(e);
+              }}
+            >
               <SelectTrigger id="fontSize'">
                 <SelectValue
                   placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_SIZE}
@@ -60,7 +76,7 @@ export const PageFormFields: React.FC<PageFormFieldsProps> = ({
               </SelectTrigger>
               <SelectContent position="popper">
                 {Object.values(FONT_SIZE).map((item) => (
-                  <SelectItem key={item.KEY} value={item.KEY}>
+                  <SelectItem key={item.KEY} value={item.VALUE}>
                     {item.VALUE}
                   </SelectItem>
                 ))}
@@ -70,7 +86,12 @@ export const PageFormFields: React.FC<PageFormFieldsProps> = ({
 
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="fontType">{I18n.MAIN_FORM.LABELS.FONT_COLOR}</Label>
-            <Select>
+            <Select
+              onValueChange={(e) => {
+                setColor(e);
+              }}
+              defaultValue={FONT_COLOR.COLOR_1.VALUE}
+            >
               <SelectTrigger id="fontColor">
                 <SelectValue
                   placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
@@ -78,12 +99,26 @@ export const PageFormFields: React.FC<PageFormFieldsProps> = ({
               </SelectTrigger>
               <SelectContent position="popper">
                 {Object.values(FONT_COLOR).map((item) => (
-                  <SelectItem key={item.KEY} value={item.KEY}>
+                  <SelectItem key={item.KEY} value={item.VALUE}>
                     {item.VALUE}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <ChartsVisualization letters={letters} products={products} />
+
+          <div className="flex flex-col space-y-1.5">
+            <Label htmlFor="cep">{I18n.MAIN_FORM.LABELS.LETTERS}</Label>
+            <Input
+              id="letters"
+              value={letters}
+              onChange={(e) => {
+                setLetters(e.target.value);
+              }}
+              placeholder={I18n.MAIN_FORM.PLACEHOLDERS.LETTERS}
+            />
           </div>
 
           <div className="flex flex-col space-y-1.5">
@@ -95,18 +130,6 @@ export const PageFormFields: React.FC<PageFormFieldsProps> = ({
                 setCep(cepMask(e.target.value) ?? "");
               }}
               placeholder={I18n.MAIN_FORM.PLACEHOLDERS.ZIP_CODE}
-            />
-          </div>
-
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="cep">{I18n.MAIN_FORM.LABELS.LETTERS}</Label>
-            <Input
-              id="cep"
-              value={letters}
-              onChange={(e) => {
-                setLetters(e.target.value);
-              }}
-              placeholder={I18n.MAIN_FORM.PLACEHOLDERS.LETTERS}
             />
           </div>
         </div>

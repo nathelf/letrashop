@@ -8,12 +8,10 @@ import {
   CardTitle,
 } from "./components/ui/card";
 
-import { Separator } from "./components/ui/separator";
 import { I18n } from "./assets/resources";
 import { PageFormFields } from "./components/PageFormFields";
 import { useEffect, useState } from "react";
 import { Label } from "./components/ui/label";
-import { Textarea } from "./components/ui/textarea";
 import { CardItem } from "./components/CardItem";
 import { formatMoney } from "./lib/utils";
 import {
@@ -27,49 +25,30 @@ import {
   AlertDialogTrigger,
 } from "./components/ui/alert-dialog";
 
+import { useFormContext } from "./context/useFormContext";
+
 function App() {
-  const [letters, setLetters] = useState<string>("");
-  const [total, setTotal] = useState<number>(0);
-  const [quantity, setQuantity] = useState<number>(0);
-  const [shippingCost, setShippingCost] = useState<number>(15);
   const [position, setPosition] = useState([51.505, -0.09]);
 
-  useEffect(() => {
-    // Check if the browser supports geolocation
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setPosition([position.coords.latitude, position.coords.longitude]);
-
-          console.log("Latitude is :", position.coords.latitude);
-          console.log("Longitude is :", position.coords.longitude);
-        },
-        (error) => {
-          console.error("Error getting geolocation:", error.message);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by your browser");
-    }
-  }, []);
+  const {
+    letters,
+    total,
+    quantity,
+    shippingCost,
+    products,
+    color,
+    type,
+    chart,
+    size,
+    cep,
+  } = useFormContext();
 
   useEffect(() => {
-    // ignore the whitespaces
-    const lettersWithoutSpaces = letters.replace(/\s/g, "");
-    // get the letters quantity
-    const lettersQuantity = lettersWithoutSpaces.length;
-    // get the total value
-    const total = lettersQuantity * 6.9;
-
-    setQuantity(total);
-
-    // get the shipping cost
-    const _shippingCost = calculateFrete(lettersQuantity);
-    setShippingCost(_shippingCost);
-
-    // get the total value
-    setTotal(total + _shippingCost);
-  }, [letters]);
+    // find the products that contains 'ouro espelhado'
+    const productsFiltered = products.filter((product) => {
+      return product.name.pt.toLowerCase().includes("ouro espelhado");
+    });
+  }, [products]);
 
   const calculateFrete = (totalChars: number) => {
     // Exemplo: frete fixo de R$ 15,00 ou R$ 1,00 por caractere, o que for maior
@@ -88,21 +67,7 @@ function App() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-1 flex-nowrap flex-col gap-6">
-            <PageFormFields letters={letters} setLetters={setLetters} />
-            <Card>
-              <CardHeader>
-                <CardTitle>{I18n.MAIN_FORM.LABELS.VISUALIZATION}</CardTitle>
-              </CardHeader>
-
-              <Separator />
-              <CardContent className="flex flex-1 w-full h-full min-h-[250px] justify-center items-center break-words gap-6">
-                <Textarea
-                  disabled
-                  value={letters}
-                  className="flex flex-1 flex-shrink min-h-[300px] h-auto break-words max-w-[886px] text-center font-bold text-6xl cursor-default"
-                />
-              </CardContent>
-            </Card>
+            <PageFormFields />
           </div>
         </CardContent>
         <div className="flex flex-1 p-6">
@@ -131,54 +96,33 @@ function App() {
         </div>
         <CardFooter className="flex justify-center">
           {/*  */}
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button className="flex flex-1 w-full h-14">
-                {I18n.MAIN_FORM.ACTIONS.MAKE_ORDER}
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Exemplo de pedido</AlertDialogTitle>
-                <AlertDialogDescription>
-                  {/* shows the informations about the order */}
-                  <div className="flex flex-col gap-4">
-                    <div className="flex flex-row justify-between">
-                      <Label className="text-sm">
-                        {I18n.MAIN_FORM.CARDS.SHIPPING_COST.TITLE}
-                      </Label>
-                      <span className="text-sm">
-                        {formatMoney(shippingCost)}
-                      </span>
-                    </div>
-                    <div className="flex flex-row justify-between">
-                      <Label className="text-sm">
-                        {I18n.MAIN_FORM.CARDS.TOTAL.TITLE}
-                      </Label>
-                      <span className="text-sm">
-                        {formatMoney(total + shippingCost)}
-                      </span>
-                    </div>
-                    {/* the letters */}
-                    <div className="flex flex-row justify-between">
-                      <Label className="text-sm">{"Letras selecionadas"}</Label>
-                      <span className="text-sm">{letters}</span>
-                    </div>
-                    {/* the address */}
-                    <div className="flex flex-row justify-between">
-                      <Label className="text-sm">{"Coordenadas"}</Label>
-                      <span className="text-sm">
-                        <p>{`${position[0]}, ${position[1]}`}</p>
-                      </span>
-                    </div>
-                  </div>
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogAction>Fechar</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button
+            className="flex flex-1 w-full h-14"
+            onClick={() => {
+              // make a payload with all informations and download as json
+              const payload = {
+                total: letters.length * 6.9,
+                shippingCost,
+                color,
+                type,
+                chart,
+                size,
+                cep,
+              };
+
+              const payloadJson = JSON.stringify(payload);
+              const payloadBlob = new Blob([payloadJson], {
+                type: "application/json",
+              });
+              const payloadUrl = URL.createObjectURL(payloadBlob);
+
+              // serve the file to download
+
+              window.open(payloadUrl);
+            }}
+          >
+            {I18n.MAIN_FORM.ACTIONS.MAKE_ORDER}
+          </Button>
         </CardFooter>
       </Card>
     </main>
