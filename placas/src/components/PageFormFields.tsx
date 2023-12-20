@@ -9,162 +9,41 @@ import {
 } from "./ui/select";
 
 import { I18n } from "../assets/resources";
-import { useEffect, useState } from "react";
 import { cepMask } from "../lib/utils";
 import { ChartsVisualization } from "./ChatsVisualization";
-import { ProductList } from "../types/types";
 import { useFormContext } from "../context/useFormContext";
-import axios from "axios";
 
 export const PageFormFields: React.FC = () => {
   const {
     letters,
-    total,
-    quantity,
-    shippingCost,
     products,
     setLetters,
-    setType,
     type,
+    setType,
+    color,
     setColor,
     size,
     setSize,
+    cep,
+    setCep,
+    cepError,
+    setCepError,
   } = useFormContext();
 
   const FONT_TYPE = I18n.MAIN_FORM.VALUES.FONT_TYPE;
   const FONT_SIZE = I18n.MAIN_FORM.VALUES.FONT_SIZE;
   const FONT_COLOR = I18n.MAIN_FORM.VALUES.FONT_COLOR;
 
-  const [cep, setCep] = useState("");
-  const [erro, setErro] = useState("");
-
-  const obterLocalizacao = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(obterEndereco, exibirErro);
-    } else {
-      setErro("Geolocalização não é suportada neste navegador.");
-    }
-  };
-
-  const obterEndereco = async (position) => {
-    const { latitude, longitude } = position.coords;
-
-    try {
-      // Substitua 'SUA_API_DE_GEOCODIFICACAO_REVERSA' pela sua API de geocodificação reversa
-      const respostaGeocodificacao = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-      );
-
-      const enderecoObtido = respostaGeocodificacao.data.address;
-
-      // Usando o ViaCEP para obter informações adicionais do endereço
-      const respostaViaCEP = await axios.get(
-        `https://viacep.com.br/ws/${enderecoObtido.postcode}/json/`
-      );
-
-      setCep(respostaViaCEP.data.cep);
-    } catch (error) {
-      setErro("Erro ao obter endereço: " + error.message);
-    }
-  };
-
-  const exibirErro = (error) => {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        setErro("Usuário negou a solicitação de geolocalização.");
-        break;
-      case error.POSITION_UNAVAILABLE:
-        setErro("Informações de localização indisponíveis.");
-        break;
-      case error.TIMEOUT:
-        setErro("A solicitação para obter a localização do usuário expirou.");
-        break;
-      default:
-        setErro("Ocorreu um erro desconhecido.");
-    }
-
-    console.log(error.code, erro);
-  };
-
-  useEffect(() => {
-    obterLocalizacao();
-  }, []);
-
   return (
     <div>
       <form>
         <div className="grid w-full items-center gap-4">
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="fontType">{I18n.MAIN_FORM.LABELS.FONT_TYPE}</Label>
-            <Select
-              onValueChange={(e) => {
-                setType(e);
-              }}
-            >
-              <SelectTrigger id="fontType'">
-                <SelectValue
-                  placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_TYPE}
-                />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {Object.values(FONT_TYPE).map((item) => (
-                  <SelectItem key={item.KEY} value={item.VALUE}>
-                    {item.VALUE}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="fontType">{I18n.MAIN_FORM.LABELS.FONT_SIZE}</Label>
-            <Select
-              onValueChange={(e) => {
-                setSize(e);
-              }}
-            >
-              <SelectTrigger id="fontSize'">
-                <SelectValue
-                  placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_SIZE}
-                />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {Object.values(FONT_SIZE).map((item) => (
-                  <SelectItem key={item.KEY} value={item.VALUE}>
-                    {item.VALUE}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="fontType">{I18n.MAIN_FORM.LABELS.FONT_COLOR}</Label>
-            <Select
-              onValueChange={(e) => {
-                setColor(e);
-              }}
-              defaultValue={FONT_COLOR.COLOR_1.VALUE}
-            >
-              <SelectTrigger id="fontColor">
-                <SelectValue
-                  placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
-                />
-              </SelectTrigger>
-              <SelectContent position="popper">
-                {Object.values(FONT_COLOR).map((item) => (
-                  <SelectItem key={item.KEY} value={item.VALUE}>
-                    {item.VALUE}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           <ChartsVisualization letters={letters} products={products} />
 
           <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="cep">{I18n.MAIN_FORM.LABELS.LETTERS}</Label>
+            <Label htmlFor="cep" className="text-end">
+              {I18n.MAIN_FORM.LABELS.LETTERS}
+            </Label>
             <Input
               id="letters"
               value={letters}
@@ -175,23 +54,139 @@ export const PageFormFields: React.FC = () => {
 
                 // Verifica se o valor atual corresponde à expressão regular
                 if (value === "" || regex.test(value.slice())) {
-                  setLetters(value);
+                  setLetters(value.toUpperCase());
                 }
               }}
               placeholder={I18n.MAIN_FORM.PLACEHOLDERS.LETTERS}
             />
           </div>
 
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="cep">{I18n.MAIN_FORM.LABELS.ZIP_CODE}</Label>
-            <Input
-              id="cep"
-              value={cep}
-              onChange={(e) => {
-                setCep(cepMask(e.target.value) ?? "");
-              }}
-              placeholder={I18n.MAIN_FORM.PLACEHOLDERS.ZIP_CODE}
-            />
+          <div className="flex  lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
+            <div className="flex flex-col space-y-1.5 lg:w-full md:w-full">
+              <Label htmlFor="fontType" className="text-end">
+                {I18n.MAIN_FORM.LABELS.FONT_TYPE}
+              </Label>
+              <Select
+                onValueChange={(e) => {
+                  setType(e);
+                }}
+                defaultValue={type}
+              >
+                <SelectTrigger id="fontType'">
+                  <SelectValue
+                    placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_TYPE}
+                  />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {size === "30mm" ? (
+                    <>
+                      <SelectItem
+                        key={FONT_TYPE.TYPE_2.KEY}
+                        value={FONT_TYPE.TYPE_2.VALUE}
+                      >
+                        {FONT_TYPE.TYPE_2.VALUE}
+                      </SelectItem>
+                    </>
+                  ) : (
+                    <>
+                      <SelectItem
+                        key={FONT_TYPE.TYPE_1.KEY}
+                        value={FONT_TYPE.TYPE_1.VALUE}
+                      >
+                        {FONT_TYPE.TYPE_1.VALUE}
+                      </SelectItem>
+                      <SelectItem
+                        key={FONT_TYPE.TYPE_2.KEY}
+                        value={FONT_TYPE.TYPE_2.VALUE}
+                      >
+                        {FONT_TYPE.TYPE_2.VALUE}
+                      </SelectItem>
+                    </>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col space-y-1.5 w-full">
+              <Label htmlFor="fontType" className="text-end">
+                {I18n.MAIN_FORM.LABELS.FONT_SIZE}
+              </Label>
+              <Select
+                onValueChange={(e) => {
+                  setSize(e);
+                }}
+                defaultValue={size}
+              >
+                <SelectTrigger id="fontSize'">
+                  <SelectValue
+                    placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_SIZE}
+                  />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {Object.values(FONT_SIZE).map((item) => (
+                    <SelectItem key={item.KEY} value={item.VALUE}>
+                      {item.VALUE}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
+            <div className="flex flex-col space-y-1.5 w-full">
+              <Label htmlFor="fontType" className="text-end">
+                {I18n.MAIN_FORM.LABELS.FONT_COLOR}
+              </Label>
+              <Select
+                onValueChange={(e) => {
+                  setColor(e);
+                }}
+                defaultValue={color}
+              >
+                <SelectTrigger id="fontColor">
+                  <SelectValue
+                    placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
+                  />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  {Object.values(FONT_COLOR).map((item) => (
+                    <SelectItem key={item.KEY} value={item.VALUE}>
+                      {item.VALUE}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col space-y-1.5 w-full">
+              <Label htmlFor="cep" className="text-end">
+                {I18n.MAIN_FORM.LABELS.ZIP_CODE}
+              </Label>
+              <Input
+                id="cep"
+                value={cep}
+                className={`${cepError ? "border-red-500" : ""}`}
+                onChange={(e) => {
+                  setCep(cepMask(e.target.value) ?? "");
+
+                  // validate the cep
+                  if (cepMask(e.target.value) !== null) {
+                    if (cepMask(e.target.value)?.length === 9) {
+                      setCepError("");
+                    } else {
+                      setCepError("CEP inválido");
+                    }
+                  }
+                }}
+                placeholder={I18n.MAIN_FORM.PLACEHOLDERS.ZIP_CODE}
+              />
+              {cepError !== "" && (
+                <div className="col-span-4 text-red-500 text-sm mt-1">
+                  {cepError}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </form>

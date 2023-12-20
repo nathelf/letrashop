@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { getProduct } from "../lib/request";
-import { ProductList } from "../types/types";
+import { ProductList, ViaCepResponseDTO } from "../types/types";
 
 type FormContextData = {
   letters: string;
@@ -29,6 +29,16 @@ type FormContextData = {
   setShippingCost: React.Dispatch<React.SetStateAction<number>>;
   chart: ProductList;
   setChart: React.Dispatch<React.SetStateAction<ProductList>>;
+  city: string;
+  setCity: React.Dispatch<React.SetStateAction<string>>;
+  state: string;
+  setState: React.Dispatch<React.SetStateAction<string>>;
+  weight: number;
+  setWeight: React.Dispatch<React.SetStateAction<number>>;
+  setAddress: React.Dispatch<React.SetStateAction<ViaCepResponseDTO>>;
+  address: ViaCepResponseDTO;
+  cepError: string;
+  setCepError: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const FormContext = createContext({} as FormContextData);
@@ -39,11 +49,31 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
   const [cep, setCep] = useState<string>("");
   const [color, setColor] = useState<string>("Preto");
   const [size, setSize] = useState<string>("30mm");
-  const [type, setType] = useState<string>("Clássica");
+  const [type, setType] = useState<string>("Moderna");
   const [quantity, setQuantity] = useState<number>(0);
   // O total inicial é o frete fixo de R$ 15,00 + o valor de uma letra (R$ 6,90)
   const [total, setTotal] = useState<number>(15 + 27.6);
-  const [shippingCost, setShippingCost] = useState<number>(15);
+  const [shippingCost, setShippingCost] = useState<number>(0);
+  const [city, setCity] = useState<string>("");
+  const [state, setState] = useState<string>("");
+
+  const [cepError, setCepError] = useState<string>("");
+
+  // endereço obtido da viaCEP
+  const [address, setAddress] = useState<ViaCepResponseDTO>({
+    cep: "",
+    logradouro: "",
+    complemento: "",
+    bairro: "",
+    localidade: "",
+    uf: "",
+    ibge: "",
+    gia: "",
+    ddd: "",
+    siafi: "",
+  });
+
+  const [weight, setWeight] = useState<number>(0);
 
   const [chart, setChart] = useState<ProductList>([]);
 
@@ -57,8 +87,23 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     // ignora todos os espaços em branco
     let lettersFiltered = letters.replace(/\s/g, "");
     setQuantity(lettersFiltered.length);
+
+    setWeight(0);
+
+    chart.map((product) => {
+      if (product.id !== -1) {
+        setWeight(
+          (prev) => prev + parseFloat(product.variants[0].weight) * 1000
+        );
+      }
+    });
+
     setTotal(lettersFiltered.length * 6.9 + shippingCost);
   }, [chart]);
+
+  useEffect(() => {
+    setTotal(quantity * 6.9 + shippingCost);
+  }, [shippingCost]);
 
   const contextValue = {
     letters,
@@ -80,6 +125,16 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     setShippingCost,
     chart,
     setChart,
+    city,
+    setCity,
+    state,
+    setState,
+    weight,
+    setWeight,
+    address,
+    setAddress,
+    cepError,
+    setCepError,
   };
 
   return (

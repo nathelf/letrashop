@@ -16,12 +16,15 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   products,
   letters,
 }) => {
-  const { color, chart, setChart, setLetters } = useFormContext();
+  const { color, chart, setChart, setLetters, size } = useFormContext();
   const [colorBackground, setColorBackGround] = useState("#FFF");
 
   useEffect(() => {
     let productsFiltered = products.filter((product) => {
-      return product.name.pt.toLowerCase().includes(color.toLowerCase());
+      return (
+        product.name.pt.toLowerCase().includes(color.toLowerCase()) &&
+        product.name.pt.toLowerCase().includes(size.toLowerCase())
+      );
     });
 
     let productsSelected: ProductList = [];
@@ -59,13 +62,14 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     });
 
     console.log(productsSelected);
+
     setChart(productsSelected);
-  }, [letters, color]);
+  }, [letters, color, size]);
 
   useEffect(() => {
     setTimeout(() => {
       setLetters("1234");
-    }, 1000);
+    }, 1500);
   }, []);
 
   return (
@@ -80,7 +84,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
 
       <Separator />
       <CardContent
-        className="flex flex-1 max-w-[800px] h-full min-h-[250px] justify-center items-center break-words gap-6"
+        className="flex flex-1 max-w-[800px] h-full min-h-[200px] justify-center items-center break-words gap-6"
         style={{ background: colorBackground }}
       >
         <div className="flex flex-wrap flex-row">
@@ -90,7 +94,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
                   return (
                     <div
                       key={index}
-                      className="w-[60px] h-[60px] p-1 flex justify-center items-center"
+                      className="w-[90px] h-[90px] p-1 flex justify-center items-center"
                     >
                       <span className="text-2xl"> </span>
                     </div>
@@ -101,7 +105,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
                       key={index}
                       src={product.images[0].src}
                       alt={product.name.pt}
-                      className="w-[60px] h-[60px] p-1"
+                      className="w-[90px] h-[90px] p-1"
                     />
                   );
                 }

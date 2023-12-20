@@ -1,5 +1,4 @@
 import "./App.css";
-import { Button } from "./components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,55 +10,201 @@ import {
 import { I18n } from "./assets/resources";
 import { PageFormFields } from "./components/PageFormFields";
 import { useEffect, useState } from "react";
-import { Label } from "./components/ui/label";
 import { CardItem } from "./components/CardItem";
-import { formatMoney } from "./lib/utils";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./components/ui/alert-dialog";
+import { formatMoney, shippingRates } from "./lib/utils";
 
 import { useFormContext } from "./context/useFormContext";
+import axios from "axios";
+import { CheckoutModal } from "./components/CheckoutModal/CheckoutModal";
+import { Button } from "./components/ui/button";
+import { toast } from "./components/ui/use-toast";
 
 function App() {
-  const [position, setPosition] = useState([51.505, -0.09]);
-
   const {
-    letters,
     total,
     quantity,
     shippingCost,
-    products,
-    color,
-    type,
-    chart,
-    size,
+    setShippingCost,
     cep,
+    setCep,
+    city,
+    setCity,
+    state,
+    setState,
+    weight,
+    setAddress,
+    setCepError,
+    cepError,
+    chart,
   } = useFormContext();
 
-  useEffect(() => {
-    // find the products that contains 'ouro espelhado'
-    const productsFiltered = products.filter((product) => {
-      return product.name.pt.toLowerCase().includes("ouro espelhado");
-    });
-  }, [products]);
+  const [erro, setErro] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const calculateFrete = (totalChars: number) => {
-    // Exemplo: frete fixo de R$ 15,00 ou R$ 1,00 por caractere, o que for maior
-    var fretePorCaractere = totalChars * 1;
-    var freteFixo = 15;
-    return Math.max(fretePorCaractere, freteFixo);
+  const obterLocalizacao = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(obterEndereco, exibirErro);
+    } else {
+      setErro("Geolocalização não é suportada neste navegador.");
+    }
   };
 
+  const obterEndereco = async (position) => {
+    const { latitude, longitude } = position.coords;
+
+    try {
+      // Substitua 'SUA_API_DE_GEOCODIFICACAO_REVERSA' pela sua API de geocodificação reversa
+      const respostaGeocodificacao = await axios.get(
+        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+      );
+
+      const enderecoObtido = respostaGeocodificacao.data.address;
+
+      setCep(enderecoObtido.postcode);
+    } catch (error) {
+      setErro("Erro ao obter endereço: " + error.message);
+    }
+  };
+
+  const getCep = async () => {
+    // Usando o ViaCEP para obter informações adicionais do endereço
+
+    if (cep?.length <= 8) {
+      return;
+    }
+
+    if (cep !== undefined) {
+      await axios
+        .get(`https://viacep.com.br/ws/${cep}/json/`)
+        .then((response) => {
+          setAddress(response.data);
+          setCity(response.data.localidade);
+          setState(response.data.uf);
+        });
+    }
+  };
+
+  const exibirErro = (error) => {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        setErro("Usuário negou a solicitação de geolocalização.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        setErro("Informações de localização indisponíveis.");
+        break;
+      case error.TIMEOUT:
+        setErro("A solicitação para obter a localização do usuário expirou.");
+        break;
+      default:
+        setErro("Ocorreu um erro desconhecido.");
+    }
+
+    console.log(error.code, erro);
+  };
+
+  useEffect(() => {
+    obterLocalizacao();
+  }, []);
+
+  const calculateFrete = async () => {
+    if (weight <= 300) {
+      if (state === "PR") {
+        setShippingCost(shippingRates["mini"].prices.E3.price);
+        return;
+      } else if (state === "SP" || state === "RJ" || state === "RS") {
+        if (shippingRates["mini"].prices.N1.cities.includes(city)) {
+          setShippingCost(shippingRates["mini"].prices.N1.price);
+          return;
+        } else {
+          setShippingCost(shippingRates["mini"].prices.I1.price);
+          return;
+        }
+      } else if (state === "MG" || state === "MS" || state === "RJ") {
+        if (shippingRates["mini"].prices.N2.cities.includes(city)) {
+          setShippingCost(shippingRates["mini"].prices.N2.price);
+          return;
+        } else {
+          setShippingCost(shippingRates["mini"].prices.I2.price);
+          return;
+        }
+      } else if (state === "DF" || state === "ES" || state === "MT") {
+        if (shippingRates["mini"].prices.N3.cities.includes(city)) {
+          setShippingCost(shippingRates["mini"].prices.N3.price);
+          return;
+        } else {
+          setShippingCost(shippingRates["mini"].prices.I3.price);
+          return;
+        }
+      } else {
+        if (shippingRates["mini"].prices.N4.cities.includes(city)) {
+          setShippingCost(shippingRates["mini"].prices.N4.price);
+          return;
+        } else {
+          setShippingCost(shippingRates["mini"].prices.I4.price);
+          return;
+        }
+      }
+    } else {
+      if (state === "PR") {
+        if (weight <= 500) {
+          setShippingCost(shippingRates["pac"].prices.E3["500"]);
+          return;
+        } else if (weight <= 1000) {
+          setShippingCost(shippingRates["pac"].prices.E3["1000"]);
+          return;
+        } else if (weight <= 2000) {
+          setShippingCost(shippingRates["pac"].prices.E3["2000"]);
+          return;
+        } else if (weight <= 3000) {
+          setShippingCost(shippingRates["pac"].prices.E3["3000"]);
+          return;
+        } else if (weight <= 4000) {
+          setShippingCost(shippingRates["pac"].prices.E3["4000"]);
+          return;
+        } else if (weight <= 5000) {
+          setShippingCost(shippingRates["pac"].prices.E3["5000"]);
+          return;
+        } else if (weight <= 6000) {
+          setShippingCost(shippingRates["pac"].prices.E3["6000"]);
+          return;
+        } else if (weight <= 7000) {
+          setShippingCost(shippingRates["pac"].prices.E3["7000"]);
+          return;
+        } else if (weight <= 8000) {
+          setShippingCost(shippingRates["pac"].prices.E3["8000"]);
+          return;
+        } else if (weight <= 9000) {
+          setShippingCost(shippingRates["pac"].prices.E3["9000"]);
+          return;
+        } else if (weight <= 10000) {
+          setShippingCost(shippingRates["pac"].prices.E3["10000"]);
+          return;
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log(cep);
+    if (cep?.length <= 8) {
+      setShippingCost(0);
+      return;
+    }
+    getCep();
+  }, [cep]);
+
+  useEffect(() => {
+    if (cep?.length <= 8 || state === "" || weight === 0 || city === "") {
+      setShippingCost(0);
+      return;
+    }
+
+    calculateFrete();
+  }, [weight, state, city]);
+
   return (
-    <main className="flex flex-col min-h-screen items-center justify-between p-24 gap-6">
-      <Card className="flex flex-1 laptop:min-w-[886px] flex-col">
+    <main className="flex flex-1 flex-col  items-center justify-center gap-6">
+      <Card className="flex flex-1 lg:min-w-[886px] md:min-w-[700px] sm:min-w-[400px] flex-col xs:min-w-[300px] m-4">
         <CardHeader className={"flex flex-1 justify-center items-center"}>
           <CardTitle className={"flex flex-1 font-bold text-5xl"}>
             {I18n.MAIN_FORM.TITLE}
@@ -70,8 +215,8 @@ function App() {
             <PageFormFields />
           </div>
         </CardContent>
-        <div className="flex flex-1 p-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full max-w-[978px] justify-between">
+        <div className="flex flex-1 p-6 flex-col gap-2">
+          <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full max-w-[978px] mx-auto">
             <CardItem
               text={I18n.MAIN_FORM.CARDS.UNIT_PRICE.VALUE}
               title={I18n.MAIN_FORM.CARDS.UNIT_PRICE.TITLE}
@@ -85,7 +230,10 @@ function App() {
             <CardItem
               title={I18n.MAIN_FORM.CARDS.SHIPPING_COST.TITLE}
               text={formatMoney(shippingCost)}
-              observation={I18n.MAIN_FORM.CARDS.SHIPPING_COST.DESCRIPTION}
+              observation={
+                I18n.MAIN_FORM.CARDS.SHIPPING_COST.DESCRIPTION +
+                (weight <= 300 ? " (Mini envio)" : " (PAC)")
+              }
             />
             <CardItem
               title={I18n.MAIN_FORM.CARDS.TOTAL.TITLE}
@@ -93,36 +241,50 @@ function App() {
               observation={I18n.MAIN_FORM.CARDS.TOTAL.DESCRIPTION}
             />
           </div>
+
+          <div className="grid gap-4">
+            <CardItem
+              title={"Peso total"}
+              text={`${weight ?? 0} gramas`}
+              observation={"Campo para validação do peso total"}
+            />
+          </div>
         </div>
         <CardFooter className="flex justify-center">
-          {/*  */}
           <Button
             className="flex flex-1 w-full h-14"
-            onClick={() => {
-              // make a payload with all informations and download as json
-              const payload = {
-                total: letters.length * 6.9,
-                shippingCost,
-                color,
-                type,
-                chart,
-                size,
-                cep,
-              };
+            onClick={(e) => {
+              console.log(cep);
+              if (cep === "") {
+                setCepError("CEP é obrigatório");
+                return;
+              }
 
-              const payloadJson = JSON.stringify(payload);
-              const payloadBlob = new Blob([payloadJson], {
-                type: "application/json",
-              });
-              const payloadUrl = URL.createObjectURL(payloadBlob);
+              if (cep !== "") {
+                setCepError("");
+              }
 
-              // serve the file to download
+              if (cep.length !== 9) {
+                setCepError("CEP inválido");
+                return;
+              }
 
-              window.open(payloadUrl);
+              if (chart.length === 0) {
+                toast({
+                  variant: "destructive",
+                  title: "Carrinho vazio",
+                  description:
+                    "Adicione itens ao carrinho para realizar o pedido",
+                });
+                return;
+              }
+
+              setOpen(true);
             }}
           >
-            {I18n.MAIN_FORM.ACTIONS.MAKE_ORDER}
+            {"Realizar pedido"}
           </Button>
+          <CheckoutModal open={open} setOpen={setOpen} />
         </CardFooter>
       </Card>
     </main>

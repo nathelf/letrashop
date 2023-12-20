@@ -23,7 +23,7 @@
     "LABELS": {
       "LETTERS": "Letras",
       "FONT_TYPE": "Tipo de letra",
-      "FONT_SIZE": "Tamanho de letra",
+      "FONT_SIZE": "Tamanho (altura)",
       "FONT_COLOR": "Cor de letra",
       "ZIP_CODE": "CEP",
       "PRICE": "Preço por letra",
@@ -56,10 +56,18 @@
           "VALUE": "30mm"
         },
         "SIZE_2": {
+          "KEY": "40",
+          "VALUE": "40mm"
+        },
+        "SIZE_3": {
+          "KEY": "125",
+          "VALUE": "125mm"
+        },
+        "SIZE_4": {
           "KEY": "130",
           "VALUE": "130mm"
         },
-        "SIZE_3": {
+        "SIZE_5": {
           "KEY": "180",
           "VALUE": "180mm"
         }
@@ -93,6 +101,9 @@
     },
     "ACTIONS": {
       "MAKE_ORDER": "Fazer pedido"
+    },
+    "MODAL": {
+      "TITLE": "INSERIR O TITULO"
     }
   }
 }

@@ -83,6 +83,47 @@ export type Product = {
   categories: any[]; // Replace with actual type
 };
 
+export type Address = {
+  address?: string;
+  number?: string;
+  city?: string;
+  province?: string;
+  zipcode: string;
+};
+
+export type Shipping = {
+  cost: string;
+  shipping_address: Address;
+};
+
+export type Order = {
+  contact_name: string;
+  contact_lastname: string;
+  contact_email: string;
+  payment_status: string;
+  products: {
+    product_id: number;
+    variant_id: number;
+    quantity: number;
+  }[];
+  shipping: Shipping;
+};
+
 export type ProductList = Product[];
 
 export type ProductListResponseDTO = ProductList;
+
+export type OrderRequestDTO = Order;
+
+export type ViaCepResponseDTO = {
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  ibge: string;
+  gia: string;
+  ddd: string;
+  siafi: string;
+};
