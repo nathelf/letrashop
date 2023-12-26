@@ -23,7 +23,7 @@ export const ColorPickerDialog: React.FC<ColorPickerDialogProps> = ({
   color,
   setColor,
 }) => {
-  const [newColor, setNewColor] = useState("#FFF");
+  const [newColor, setNewColor] = useState("#C0C0C0");
 
   return (
     <AlertDialog>
@@ -33,12 +33,14 @@ export const ColorPickerDialog: React.FC<ColorPickerDialogProps> = ({
             className="block w-6 h-6 rounded-full shadow-md"
             style={{ background: color }}
           ></span>
-          {"Definir cor"}
+          {"Definir cor da parede"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader className="items-center">
-          <AlertDialogTitle>{"Selecione uma cor de fundo"}</AlertDialogTitle>
+          <AlertDialogTitle>
+            {"Escolha aqui a cor de sua parede"}
+          </AlertDialogTitle>
           <AlertDialogDescription>
             <Colorful
               color={newColor}

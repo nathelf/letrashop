@@ -17,7 +17,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   letters,
 }) => {
   const { color, chart, setChart, setLetters, size } = useFormContext();
-  const [colorBackground, setColorBackGround] = useState("#FFF");
+  const [colorBackground, setColorBackGround] = useState("#E0E0E0");
 
   useEffect(() => {
     let productsFiltered = products.filter((product) => {
@@ -73,9 +73,9 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   }, []);
 
   return (
-    <Card>
-      <CardHeader className="flex-1 flex-row items-center gap-4">
-        <CardTitle>{I18n.MAIN_FORM.LABELS.VISUALIZATION}</CardTitle>
+    <Card className="w-full max-w-[236px] md:max-w-[618px] lg:max-w-full lg:w-full h-auto">
+      <CardHeader className="flex flex-1 items-center gap-2 flex-col md:flex-row lg:flex-row p-2">
+        {/* <CardTitle>{I18n.MAIN_FORM.LABELS.VISUALIZATION}</CardTitle> */}
         <ColorPickerDialog
           color={colorBackground}
           setColor={setColorBackGround}
@@ -84,10 +84,10 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
 
       <Separator />
       <CardContent
-        className="flex flex-1 max-w-[800px] h-full min-h-[200px] justify-center items-center break-words gap-6"
+        className="flex flex-1 max-w-[800px] h-full min-h-[120px] justify-center items-center content-center break-words gap-6 p-6"
         style={{ background: colorBackground }}
       >
-        <div className="flex flex-wrap flex-row">
+        <div className="flex flex-wrap flex-row justify-center items-center content-center">
           {chart.length > 0
             ? chart.map((product, index) => {
                 if (product.id === -1) {

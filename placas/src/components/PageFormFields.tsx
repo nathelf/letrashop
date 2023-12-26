@@ -40,7 +40,7 @@ export const PageFormFields: React.FC = () => {
         <div className="grid w-full items-center gap-4">
           <ChartsVisualization letters={letters} products={products} />
 
-          <div className="flex flex-col space-y-1.5">
+          <div className="flex flex-1 flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:max-w-full lg:w-full">
             <Label htmlFor="cep" className="text-end">
               {I18n.MAIN_FORM.LABELS.LETTERS}
             </Label>
@@ -61,8 +61,8 @@ export const PageFormFields: React.FC = () => {
             />
           </div>
 
-          <div className="flex  lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
-            <div className="flex flex-col space-y-1.5 lg:w-full md:w-full">
+          <div className="flex flex-1 lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
+            <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
               <Label htmlFor="fontType" className="text-end">
                 {I18n.MAIN_FORM.LABELS.FONT_TYPE}
               </Label>
@@ -107,7 +107,7 @@ export const PageFormFields: React.FC = () => {
               </Select>
             </div>
 
-            <div className="flex flex-col space-y-1.5 w-full">
+            <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
               <Label htmlFor="fontType" className="text-end">
                 {I18n.MAIN_FORM.LABELS.FONT_SIZE}
               </Label>
@@ -134,7 +134,7 @@ export const PageFormFields: React.FC = () => {
           </div>
 
           <div className="flex lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
-            <div className="flex flex-col space-y-1.5 w-full">
+            <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
               <Label htmlFor="fontType" className="text-end">
                 {I18n.MAIN_FORM.LABELS.FONT_COLOR}
               </Label>
@@ -159,7 +159,7 @@ export const PageFormFields: React.FC = () => {
               </Select>
             </div>
 
-            <div className="flex flex-col space-y-1.5 w-full">
+            <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
               <Label htmlFor="cep" className="text-end">
                 {I18n.MAIN_FORM.LABELS.ZIP_CODE}
               </Label>

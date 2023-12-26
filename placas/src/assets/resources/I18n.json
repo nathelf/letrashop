@@ -22,7 +22,7 @@
     },
     "LABELS": {
       "LETTERS": "Letras",
-      "FONT_TYPE": "Tipo de letra",
+      "FONT_TYPE": "formato da letra",
       "FONT_SIZE": "Tamanho (altura)",
       "FONT_COLOR": "Cor de letra",
       "ZIP_CODE": "CEP",

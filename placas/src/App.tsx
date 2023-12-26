@@ -203,15 +203,15 @@ function App() {
   }, [weight, state, city]);
 
   return (
-    <main className="flex flex-1 flex-col  items-center justify-center gap-6">
-      <Card className="flex flex-1 lg:min-w-[886px] md:min-w-[700px] sm:min-w-[400px] flex-col xs:min-w-[300px] m-4">
+    <main className="flex items-center justify-center w-full h-full overflow-x-auto">
+      <Card className="w-full max-w-xs sm:max-w-[300px] md:max-w-[700px] lg:max-w-[886px] xl:max-w-[886px] mx-auto p-4">
         <CardHeader className={"flex flex-1 justify-center items-center"}>
           <CardTitle className={"flex flex-1 font-bold text-5xl"}>
             {I18n.MAIN_FORM.TITLE}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-1 flex-nowrap flex-col gap-6">
+          <div className="flex flex-1 w-full flex-col gap-6">
             <PageFormFields />
           </div>
         </CardContent>
