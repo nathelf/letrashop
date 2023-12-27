@@ -22,6 +22,8 @@
     },
     "LABELS": {
       "LETTERS": "Letras",
+      "NUMBERS": "Números",
+      "LETTERS_AND_NUMBERS": "Letras e números",
       "FONT_TYPE": "formato da letra",
       "FONT_SIZE": "Tamanho (altura)",
       "FONT_COLOR": "Cor de letra",
@@ -43,11 +45,11 @@
       "FONT_TYPE": {
         "TYPE_1": {
           "KEY": "CLASSIC",
-          "VALUE": "Clássica"
+          "VALUE": "Redonda"
         },
         "TYPE_2": {
           "KEY": "MODERN",
-          "VALUE": "Moderna"
+          "VALUE": "Quadrada"
         }
       },
       "FONT_SIZE": {
@@ -56,18 +58,10 @@
           "VALUE": "30mm"
         },
         "SIZE_2": {
-          "KEY": "40",
-          "VALUE": "40mm"
-        },
-        "SIZE_3": {
-          "KEY": "125",
-          "VALUE": "125mm"
-        },
-        "SIZE_4": {
           "KEY": "130",
           "VALUE": "130mm"
         },
-        "SIZE_5": {
+        "SIZE_3": {
           "KEY": "180",
           "VALUE": "180mm"
         }

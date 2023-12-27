@@ -7,6 +7,8 @@ import {
   CardTitle,
 } from "./components/ui/card";
 
+import logo from "./assets/resources/logo.png";
+
 import { I18n } from "./assets/resources";
 import { PageFormFields } from "./components/PageFormFields";
 import { useEffect, useState } from "react";
@@ -207,7 +209,8 @@ function App() {
       <Card className="w-full max-w-xs sm:max-w-[300px] md:max-w-[700px] lg:max-w-[886px] xl:max-w-[886px] mx-auto p-4">
         <CardHeader className={"flex flex-1 justify-center items-center"}>
           <CardTitle className={"flex flex-1 font-bold text-5xl"}>
-            {I18n.MAIN_FORM.TITLE}
+            {/* {I18n.MAIN_FORM.TITLE} */}
+            <img src={logo} alt="Logo" className="w-[350px] h-[100px]" />
           </CardTitle>
         </CardHeader>
         <CardContent>

@@ -49,7 +49,7 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
   const [cep, setCep] = useState<string>("");
   const [color, setColor] = useState<string>("Preto");
   const [size, setSize] = useState<string>("30mm");
-  const [type, setType] = useState<string>("Moderna");
+  const [type, setType] = useState<string>("Quadrada");
   const [quantity, setQuantity] = useState<number>(0);
   // O total inicial é o frete fixo de R$ 15,00 + o valor de uma letra (R$ 6,90)
   const [total, setTotal] = useState<number>(15 + 27.6);
