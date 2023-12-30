@@ -53,7 +53,116 @@ export const PageFormFields: React.FC = () => {
   useEffect(() => {
     setProductsInStock(products);
     setLetters("");
+    // revalidateLetters();
   }, [color, type, size]);
+
+  function revalidateLetters() {
+    let copyLetters = letters;
+
+    let newLetters = "";
+
+    copyLetters
+      .slice()
+      .split("")
+      .forEach((letter) => {
+        const value = letter;
+        let regex;
+        let prod: Product;
+        let hasStock = true;
+
+        if (size === "30mm" || size === "130mm") {
+          regex =
+            /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ -\/\\,.^]*$/;
+        } else {
+          regex = /^[0-9 -.,/\\]*$/;
+        }
+
+        // se for espaço ignora toda a validação de estoque
+        if (value.slice()[value.slice().length - 1] !== " ") {
+          // Verifica se o valor atual corresponde à expressão regular
+          if (!regex.test(value.slice())) {
+            if (value === "") {
+              prod = whichSpecialCharIs(letters);
+
+              // encontra o index do produto
+              let index = productsInStock.findIndex(
+                (product) => product.id === prod.id
+              );
+
+              // incrementa o estoque
+              if (
+                productsInStock[index].variants[0].inventory_levels[0].stock !==
+                null
+              ) {
+                hasStock = changeStock(productsInStock[index], 1);
+              }
+
+              newLetters = "";
+            }
+
+            return;
+          }
+
+          // Esta inserindo um caractere
+          if (value.length > letters.length) {
+            // Esta inserindo um caractere
+
+            // checa se é um caractere especial
+            if (isSpecialChar(value)) {
+              // verifica se precisa incrementar a qtd de kits
+              let kitsNeeded = contarUnidades(value.slice());
+
+              if (kitsNeeded > kits) {
+                // subtrai uma unidade na qtd de kits disponíveis
+                hasStock = changeStock(getKits(), -1);
+              } else if (kitsNeeded < kits) {
+                // acrescenta uma unidade na qtd de kits disponíveis
+                // não sei se vai acontecer isso, mas só pra garantir
+                hasStock = changeStock(getKits(), 1);
+              }
+
+              if (hasStock) {
+                setKits(kitsNeeded);
+              }
+
+              prod = whichSpecialCharIs(value);
+
+              // se prod for undefined então é um caractere especial sozinho
+              // e ja foi atualizado o estoque
+              if (prod !== undefined) {
+                // encontra o index do produto
+                let index = productsInStock.findIndex(
+                  (product) => product.id === prod.id
+                );
+
+                // decrementa o estoque
+                hasStock = changeStock(productsInStock[index], -1);
+              }
+            } else {
+              // não é um caractere especial
+
+              prod = searchProduct(value.slice()[value.slice().length - 1]);
+
+              // encontra o index do produto
+              let index = productsInStock.findIndex(
+                (product) => product.id === prod.id
+              );
+
+              // decrementa o estoque
+              hasStock = changeStock(productsInStock[index], -1);
+            }
+          }
+
+          if (hasStock) {
+            newLetters += value.toUpperCase();
+          }
+        } else {
+          newLetters += value.toUpperCase();
+        }
+      });
+
+    setLetters(newLetters);
+  }
 
   /**
    * Check if a string is an exact match for a search term.
@@ -183,10 +292,12 @@ export const PageFormFields: React.FC = () => {
       (_product) => _product.id === product.id
     );
 
-    if (productsInStock[index].variants[0].weight * 1000 + weight >= 270) {
-      // abre o modal de peso máximo excedido
-      setOpenWeight(true);
-      return false;
+    if (quantity < 0) {
+      if (productsInStock[index].variants[0].weight * 1000 + weight >= 270) {
+        // abre o modal de peso máximo excedido
+        setOpenWeight(true);
+        return false;
+      }
     }
 
     if (productsInStock[index].variants[0].inventory_levels[0].stock !== null) {
@@ -213,6 +324,90 @@ export const PageFormFields: React.FC = () => {
     }
 
     return true;
+  }
+
+  function isSpecialChar(value: string): boolean {
+    return (
+      value.slice()[value.slice().length - 1] === "Ã" ||
+      value.slice()[value.slice().length - 1] === "Õ" ||
+      value.slice()[value.slice().length - 1] === "Â" ||
+      value.slice()[value.slice().length - 1] === "Ê" ||
+      value.slice()[value.slice().length - 1] === "Î" ||
+      value.slice()[value.slice().length - 1] === "Ô" ||
+      value.slice()[value.slice().length - 1] === "Û" ||
+      value.slice()[value.slice().length - 1] === "Á" ||
+      value.slice()[value.slice().length - 1] === "É" ||
+      value.slice()[value.slice().length - 1] === "Í" ||
+      value.slice()[value.slice().length - 1] === "Ó" ||
+      value.slice()[value.slice().length - 1] === "Ú" ||
+      value.slice()[value.slice().length - 1] === "À" ||
+      value.slice()[value.slice().length - 1] === "È" ||
+      value.slice()[value.slice().length - 1] === "Ì" ||
+      value.slice()[value.slice().length - 1] === "Ò" ||
+      value.slice()[value.slice().length - 1] === "Ù" ||
+      value.slice()[value.slice().length - 1] === "Ç" ||
+      value.slice()[value.slice().length - 1] === "." ||
+      value.slice()[value.slice().length - 1] === "/" ||
+      value.slice()[value.slice().length - 1] === "\\" ||
+      value.slice()[value.slice().length - 1] === "^" ||
+      value.slice()[value.slice().length - 1] === "-" ||
+      value.slice()[value.slice().length - 1] === ","
+    );
+  }
+
+  function whichSpecialCharIs(value: string): Product {
+    let prod: Product;
+    // verifica qual caractere especial é pra subtrair uma unidade a letra base
+    if (value.slice()[value.slice().length - 1] === "Ã") {
+      prod = searchProduct("A");
+    } else if (value.slice()[value.slice().length - 1] === "Õ") {
+      prod = searchProduct("O");
+    } else if (value.slice()[value.slice().length - 1] === "Â") {
+      prod = searchProduct("A");
+    } else if (value.slice()[value.slice().length - 1] === "Ê") {
+      prod = searchProduct("E");
+    } else if (value.slice()[value.slice().length - 1] === "Î") {
+      prod = searchProduct("I");
+    } else if (value.slice()[value.slice().length - 1] === "Ô") {
+      prod = searchProduct("O");
+    } else if (value.slice()[value.slice().length - 1] === "Û") {
+      prod = searchProduct("U");
+    } else if (value.slice()[value.slice().length - 1] === "Á") {
+      prod = searchProduct("A");
+    } else if (value.slice()[value.slice().length - 1] === "É") {
+      prod = searchProduct("E");
+    } else if (value.slice()[value.slice().length - 1] === "Í") {
+      prod = searchProduct("I");
+    } else if (value.slice()[value.slice().length - 1] === "Ó") {
+      prod = searchProduct("O");
+    } else if (value.slice()[value.slice().length - 1] === "Ú") {
+      prod = searchProduct("U");
+    } else if (value.slice()[value.slice().length - 1] === "À") {
+      prod = searchProduct("A");
+    } else if (value.slice()[value.slice().length - 1] === "È") {
+      prod = searchProduct("E");
+    } else if (value.slice()[value.slice().length - 1] === "Ì") {
+      prod = searchProduct("I");
+    } else if (value.slice()[value.slice().length - 1] === "Ò") {
+      prod = searchProduct("O");
+    } else if (value.slice()[value.slice().length - 1] === "Ù") {
+      prod = searchProduct("U");
+    } else if (value.slice()[value.slice().length - 1] === "Ç") {
+      prod = searchProduct("C");
+    } else if (
+      value.slice()[value.slice().length - 1] === "." ||
+      value.slice()[value.slice().length - 1] === "/" ||
+      value.slice()[value.slice().length - 1] === "\\" ||
+      value.slice()[value.slice().length - 1] === "^" ||
+      value.slice()[value.slice().length - 1] === "-" ||
+      value.slice()[value.slice().length - 1] === ","
+    ) {
+      prod = getKits();
+    } else {
+      prod = searchProduct(value.slice()[value.slice().length - 1]);
+    }
+
+    return prod;
   }
 
   return (
@@ -249,93 +444,8 @@ export const PageFormFields: React.FC = () => {
                     // Verifica se o valor atual corresponde à expressão regular
                     if (!regex.test(value.slice())) {
                       if (value === "") {
-                        if (
-                          letters.slice()[letters.slice().length - 1] === "Ã"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Õ"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Â"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ê"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Î"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ô"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Û"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Á"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "É"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Í"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ó"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ú"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "À"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "È"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ì"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ò"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ù"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ç"
-                        ) {
-                          prod = searchProduct("C");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "." ||
-                          letters.slice()[letters.slice().length - 1] === "/" ||
-                          letters.slice()[letters.slice().length - 1] ===
-                            "\\" ||
-                          letters.slice()[letters.slice().length - 1] === "^" ||
-                          letters.slice()[letters.slice().length - 1] === "-" ||
-                          letters.slice()[letters.slice().length - 1] === ","
-                        ) {
-                          prod = getKits();
-                        } else {
-                          prod = searchProduct(
-                            letters.slice()[letters.slice().length - 1]
-                          );
-                        }
+                        prod = whichSpecialCharIs(letters);
+
                         // encontra o index do produto
                         let index = productsInStock.findIndex(
                           (product) => product.id === prod.id
@@ -360,32 +470,7 @@ export const PageFormFields: React.FC = () => {
                       // Esta inserindo um caractere
 
                       // checa se é um caractere especial
-                      if (
-                        value.slice()[value.slice().length - 1] === "Ã" ||
-                        value.slice()[value.slice().length - 1] === "Õ" ||
-                        value.slice()[value.slice().length - 1] === "Â" ||
-                        value.slice()[value.slice().length - 1] === "Ê" ||
-                        value.slice()[value.slice().length - 1] === "Î" ||
-                        value.slice()[value.slice().length - 1] === "Ô" ||
-                        value.slice()[value.slice().length - 1] === "Û" ||
-                        value.slice()[value.slice().length - 1] === "Á" ||
-                        value.slice()[value.slice().length - 1] === "É" ||
-                        value.slice()[value.slice().length - 1] === "Í" ||
-                        value.slice()[value.slice().length - 1] === "Ó" ||
-                        value.slice()[value.slice().length - 1] === "Ú" ||
-                        value.slice()[value.slice().length - 1] === "À" ||
-                        value.slice()[value.slice().length - 1] === "È" ||
-                        value.slice()[value.slice().length - 1] === "Ì" ||
-                        value.slice()[value.slice().length - 1] === "Ò" ||
-                        value.slice()[value.slice().length - 1] === "Ù" ||
-                        value.slice()[value.slice().length - 1] === "Ç" ||
-                        value.slice()[value.slice().length - 1] === "." ||
-                        value.slice()[value.slice().length - 1] === "/" ||
-                        value.slice()[value.slice().length - 1] === "\\" ||
-                        value.slice()[value.slice().length - 1] === "^" ||
-                        value.slice()[value.slice().length - 1] === "-" ||
-                        value.slice()[value.slice().length - 1] === ","
-                      ) {
+                      if (isSpecialChar(value)) {
                         // verifica se precisa incrementar a qtd de kits
                         let kitsNeeded = contarUnidades(value.slice());
 
@@ -402,82 +487,7 @@ export const PageFormFields: React.FC = () => {
                           setKits(kitsNeeded);
                         }
 
-                        // verifica qual caractere especial é pra subtrair uma unidade a letra base
-                        if (value.slice()[value.slice().length - 1] === "Ã") {
-                          prod = searchProduct("A");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Õ"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Â"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ê"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Î"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ô"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Û"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Á"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "É"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Í"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ó"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ú"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "À"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "È"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ì"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ò"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ù"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          value.slice()[value.slice().length - 1] === "Ç"
-                        ) {
-                          prod = searchProduct("C");
-                        } else {
-                          prod = searchProduct(
-                            value.slice()[value.slice().length - 1]
-                          );
-                        }
+                        prod = whichSpecialCharIs(value);
 
                         // se prod for undefined então é um caractere especial sozinho
                         // e ja foi atualizado o estoque
@@ -509,32 +519,7 @@ export const PageFormFields: React.FC = () => {
                       // Esta removendo um caractere
 
                       // checa se é um caractere especial
-                      if (
-                        letters.slice()[letters.slice().length - 1] === "Ã" ||
-                        letters.slice()[letters.slice().length - 1] === "Õ" ||
-                        letters.slice()[letters.slice().length - 1] === "Â" ||
-                        letters.slice()[letters.slice().length - 1] === "Ê" ||
-                        letters.slice()[letters.slice().length - 1] === "Î" ||
-                        letters.slice()[letters.slice().length - 1] === "Ô" ||
-                        letters.slice()[letters.slice().length - 1] === "Û" ||
-                        letters.slice()[letters.slice().length - 1] === "Á" ||
-                        letters.slice()[letters.slice().length - 1] === "É" ||
-                        letters.slice()[letters.slice().length - 1] === "Í" ||
-                        letters.slice()[letters.slice().length - 1] === "Ó" ||
-                        letters.slice()[letters.slice().length - 1] === "Ú" ||
-                        letters.slice()[letters.slice().length - 1] === "À" ||
-                        letters.slice()[letters.slice().length - 1] === "È" ||
-                        letters.slice()[letters.slice().length - 1] === "Ì" ||
-                        letters.slice()[letters.slice().length - 1] === "Ò" ||
-                        letters.slice()[letters.slice().length - 1] === "Ù" ||
-                        letters.slice()[letters.slice().length - 1] === "Ç" ||
-                        letters.slice()[letters.slice().length - 1] === "." ||
-                        letters.slice()[letters.slice().length - 1] === "/" ||
-                        letters.slice()[letters.slice().length - 1] === "\\" ||
-                        letters.slice()[letters.slice().length - 1] === "^" ||
-                        letters.slice()[letters.slice().length - 1] === "-" ||
-                        letters.slice()[letters.slice().length - 1] === ","
-                      ) {
+                      if (isSpecialChar(letters)) {
                         // verifica se precisa incrementar a qtd de kits
                         let kitsNeeded = contarUnidades(value.slice());
 
@@ -551,84 +536,7 @@ export const PageFormFields: React.FC = () => {
                           setKits(kitsNeeded);
                         }
 
-                        // verifica qual caractere especial é pra acrescentar uma unidade a letra base
-                        if (
-                          letters.slice()[letters.slice().length - 1] === "Ã"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Õ"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Â"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ê"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Î"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ô"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Û"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Á"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "É"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Í"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ó"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ú"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "À"
-                        ) {
-                          prod = searchProduct("A");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "È"
-                        ) {
-                          prod = searchProduct("E");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ì"
-                        ) {
-                          prod = searchProduct("I");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ò"
-                        ) {
-                          prod = searchProduct("O");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ù"
-                        ) {
-                          prod = searchProduct("U");
-                        } else if (
-                          letters.slice()[letters.slice().length - 1] === "Ç"
-                        ) {
-                          prod = searchProduct("C");
-                        } else {
-                          prod = searchProduct(
-                            letters.slice()[letters.slice().length - 1]
-                          );
-                        }
+                        prod = whichSpecialCharIs(letters);
 
                         if (prod !== undefined) {
                           // encontra o index do produto
@@ -659,6 +567,8 @@ export const PageFormFields: React.FC = () => {
                     if (hasStock) {
                       setLetters(value.toUpperCase());
                     }
+                  } else {
+                    setLetters(value.toUpperCase());
                   }
                 }}
                 placeholder={I18n.MAIN_FORM.PLACEHOLDERS.LETTERS}
