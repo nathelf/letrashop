@@ -14,7 +14,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { createDraftOrder } from "../../lib/request";
 import { useFormContext } from "../../context/useFormContext";
-import { Product } from "../../types/types";
+import { Product, ProductList } from "../../types/types";
 import { useToast } from "../ui/use-toast";
 
 type CheckoutModalProps = {
@@ -34,48 +34,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [nameError, setNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
 
-  const { chart, address, cep, shippingCost, cepError, setCepError } =
-    useFormContext();
+  const {
+    chart,
+    address,
+    cep,
+    shippingCost,
+    cepError,
+    setCepError,
+    kitAccentuation,
+  } = useFormContext();
 
   const { toast } = useToast();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      {/* <DialogTrigger asChild>
-        <Button
-          className="flex flex-1 w-full h-14"
-          onClick={(e) => {
-            if (cep === "") {
-              setCepError("CEP é obrigatório");
-              return;
-            }
-
-            if (cep !== "") {
-              setCepError("");
-            }
-
-            if (cep.length !== 9) {
-              setCepError("CEP inválido");
-              return;
-            }
-
-            console.log(chart);
-            if (chart.length === 0) {
-              toast({
-                variant: "destructive",
-                title: "Carrinho vazio",
-                description:
-                  "Adicione itens ao carrinho para realizar o pedido",
-              });
-              return;
-            }
-
-            setOpen(true);
-          }}
-        >
-          {"Realizar pedido"}
-        </Button>
-      </DialogTrigger> */}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Informações adicionais</DialogTitle>
@@ -199,13 +171,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               }
 
               if (name !== "" && lastName !== "" && email !== "") {
+                let newChart: ProductList = chart;
+
+                if (kitAccentuation.length > 0) {
+                  newChart = newChart.concat(kitAccentuation);
+                }
+
                 // send the data to the backend
                 const data = await createDraftOrder({
                   contact_email: email,
                   contact_lastname: lastName,
                   contact_name: name,
                   payment_status: "unpaid",
-                  products: chart.map((product) => ({
+                  products: newChart.map((product) => ({
                     product_id: product.id,
                     quantity: 1,
                     variant_id: product.variants[0].id,

@@ -44,11 +44,11 @@
     "VALUES": {
       "FONT_TYPE": {
         "TYPE_1": {
-          "KEY": "CLASSIC",
+          "KEY": "REDONDO",
           "VALUE": "Redonda"
         },
         "TYPE_2": {
-          "KEY": "MODERN",
+          "KEY": "QUADRADO",
           "VALUE": "Quadrada"
         }
       },

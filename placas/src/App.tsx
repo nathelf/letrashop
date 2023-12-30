@@ -38,6 +38,7 @@ function App() {
     setCepError,
     cepError,
     chart,
+    kitAccentuation,
   } = useFormContext();
 
   const [erro, setErro] = useState("");
@@ -187,7 +188,6 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(cep);
     if (cep?.length <= 8) {
       setShippingCost(0);
       return;
@@ -251,13 +251,17 @@ function App() {
               text={`${weight ?? 0} gramas`}
               observation={"Campo para validação do peso total"}
             />
+            <CardItem
+              title={"Kits de acentuação"}
+              text={`${kitAccentuation?.length ?? 0} kits`}
+              observation={"Campo para validação da quantidade total de kits"}
+            />
           </div>
         </div>
         <CardFooter className="flex justify-center">
           <Button
             className="flex flex-1 w-full h-14"
             onClick={(e) => {
-              console.log(cep);
               if (cep === "") {
                 setCepError("CEP é obrigatório");
                 return;

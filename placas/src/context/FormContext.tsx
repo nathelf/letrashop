@@ -7,7 +7,7 @@ import {
   useState,
 } from "react";
 import { getProduct } from "../lib/request";
-import { ProductList, ViaCepResponseDTO } from "../types/types";
+import { Product, ProductList, ViaCepResponseDTO } from "../types/types";
 
 type FormContextData = {
   letters: string;
@@ -39,6 +39,8 @@ type FormContextData = {
   address: ViaCepResponseDTO;
   cepError: string;
   setCepError: React.Dispatch<React.SetStateAction<string>>;
+  kitAccentuation: ProductList;
+  setKitAccentuation: React.Dispatch<React.SetStateAction<ProductList>>;
 };
 
 const FormContext = createContext({} as FormContextData);
@@ -49,7 +51,7 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
   const [cep, setCep] = useState<string>("");
   const [color, setColor] = useState<string>("Preto");
   const [size, setSize] = useState<string>("30mm");
-  const [type, setType] = useState<string>("Quadrada");
+  const [type, setType] = useState<string>("QUADRADO");
   const [quantity, setQuantity] = useState<number>(0);
   // O total inicial é o frete fixo de R$ 15,00 + o valor de uma letra (R$ 6,90)
   const [total, setTotal] = useState<number>(15 + 27.6);
@@ -76,6 +78,7 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
   const [weight, setWeight] = useState<number>(0);
 
   const [chart, setChart] = useState<ProductList>([]);
+  const [kitAccentuation, setKitAccentuation] = useState<ProductList>([]);
 
   useEffect(() => {
     getProduct().then((response) => {
@@ -135,6 +138,8 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     setAddress,
     cepError,
     setCepError,
+    kitAccentuation,
+    setKitAccentuation,
   };
 
   return (
