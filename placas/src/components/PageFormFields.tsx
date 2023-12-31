@@ -149,6 +149,7 @@ export const PageFormFields: React.FC = () => {
               );
 
               // decrementa o estoque
+
               hasStock = changeStock(productsInStock[index], -1);
             }
           }
@@ -283,7 +284,7 @@ export const PageFormFields: React.FC = () => {
   }
 
   function compareProductName(a: string, product: Product) {
-    return a === product.name.pt.split("-")[1];
+    return a.toUpperCase() === product.name.pt.split("-")[1]?.toUpperCase();
   }
 
   function changeStock(product: Product, quantity: number) {
@@ -439,6 +440,14 @@ export const PageFormFields: React.FC = () => {
                     regex = /^[0-9 -.,/\\]*$/;
                   }
 
+                  if (
+                    value.length < letters.length &&
+                    letters.slice()[letters.slice().length - 1] === " "
+                  ) {
+                    setLetters(value.toUpperCase());
+                    return;
+                  }
+
                   // se for espaço ignora toda a validação de estoque
                   if (value.slice()[value.slice().length - 1] !== " ") {
                     // Verifica se o valor atual corresponde à expressão regular
@@ -451,13 +460,7 @@ export const PageFormFields: React.FC = () => {
                           (product) => product.id === prod.id
                         );
 
-                        // incrementa o estoque
-                        if (
-                          productsInStock[index].variants[0].inventory_levels[0]
-                            .stock !== null
-                        ) {
-                          hasStock = changeStock(productsInStock[index], 1);
-                        }
+                        hasStock = changeStock(productsInStock[index], 1);
 
                         setLetters("");
                       }
@@ -476,10 +479,12 @@ export const PageFormFields: React.FC = () => {
 
                         if (kitsNeeded > kits) {
                           // subtrai uma unidade na qtd de kits disponíveis
+
                           hasStock = changeStock(getKits(), -1);
                         } else if (kitsNeeded < kits) {
                           // acrescenta uma unidade na qtd de kits disponíveis
                           // não sei se vai acontecer isso, mas só pra garantir
+
                           hasStock = changeStock(getKits(), 1);
                         }
 
@@ -489,16 +494,28 @@ export const PageFormFields: React.FC = () => {
 
                         prod = whichSpecialCharIs(value);
 
-                        // se prod for undefined então é um caractere especial sozinho
-                        // e ja foi atualizado o estoque
-                        if (prod !== undefined) {
-                          // encontra o index do produto
-                          let index = productsInStock.findIndex(
-                            (product) => product.id === prod.id
-                          );
+                        if (
+                          !(
+                            value.slice()[value.slice().length - 1] === "." ||
+                            value.slice()[value.slice().length - 1] === "/" ||
+                            value.slice()[value.slice().length - 1] === "\\" ||
+                            value.slice()[value.slice().length - 1] === "^" ||
+                            value.slice()[value.slice().length - 1] === "-" ||
+                            value.slice()[value.slice().length - 1] === ","
+                          )
+                        ) {
+                          // se prod for undefined então é um caractere especial sozinho
+                          // e ja foi atualizado o estoque
+                          if (prod !== undefined) {
+                            // encontra o index do produto
+                            let index = productsInStock.findIndex(
+                              (product) => product.id === prod.id
+                            );
 
-                          // decrementa o estoque
-                          hasStock = changeStock(productsInStock[index], -1);
+                            // decrementa o estoque
+
+                            hasStock = changeStock(productsInStock[index], -1);
+                          }
                         }
                       } else {
                         // não é um caractere especial
@@ -513,6 +530,7 @@ export const PageFormFields: React.FC = () => {
                         );
 
                         // decrementa o estoque
+
                         hasStock = changeStock(productsInStock[index], -1);
                       }
                     } else {
@@ -525,27 +543,44 @@ export const PageFormFields: React.FC = () => {
 
                         if (kitsNeeded < kits) {
                           // acrescenta uma unidade nos kits
+
                           hasStock = changeStock(getKits(), 1);
                         } else if (kitsNeeded > kits) {
                           // subtrai uma unidade nos kits
                           // não sei se vai acontecer isso, mas só pra garantir
+
                           hasStock = changeStock(getKits(), -1);
                         }
 
-                        if (hasStock) {
-                          setKits(kitsNeeded);
-                        }
+                        setKits(kitsNeeded);
 
                         prod = whichSpecialCharIs(letters);
 
-                        if (prod !== undefined) {
-                          // encontra o index do produto
-                          let index = productsInStock.findIndex(
-                            (product) => product.id === prod.id
-                          );
+                        if (
+                          !(
+                            letters.slice()[letters.slice().length - 1] ===
+                              "." ||
+                            letters.slice()[letters.slice().length - 1] ===
+                              "/" ||
+                            letters.slice()[letters.slice().length - 1] ===
+                              "\\" ||
+                            letters.slice()[letters.slice().length - 1] ===
+                              "^" ||
+                            letters.slice()[letters.slice().length - 1] ===
+                              "-" ||
+                            letters.slice()[letters.slice().length - 1] === ","
+                          )
+                        ) {
+                          if (prod !== undefined) {
+                            // encontra o index do produto
+                            let index = productsInStock.findIndex(
+                              (product) => product.id === prod.id
+                            );
 
-                          // incrementa o estoque
-                          hasStock = changeStock(productsInStock[index], 1);
+                            // incrementa o estoque
+
+                            hasStock = changeStock(productsInStock[index], 1);
+                          }
                         }
                       } else {
                         // não é um caractere especial
@@ -560,6 +595,7 @@ export const PageFormFields: React.FC = () => {
                         );
 
                         // incrementa o estoque
+
                         hasStock = changeStock(productsInStock[index], 1);
                       }
                     }
