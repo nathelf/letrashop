@@ -6,15 +6,20 @@ import { useEffect, useState } from "react";
 import { useFormContext } from "../context/useFormContext";
 
 import { ColorPickerDialog } from "./ColorPickerDialog";
+import { Skeleton } from "./ui/skelleton";
 
 type ChartsVisualizationProps = {
   products: ProductList;
   letters: string;
+  setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+  update: boolean;
 };
 
 export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   products,
   letters,
+  setUpdate,
+  update,
 }) => {
   const { color, chart, setChart, setLetters, size, type, setKitAccentuation } =
     useFormContext();
@@ -106,7 +111,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     return regex.test(name);
   }
 
-  useEffect(() => {
+  function addLettersChart() {
     let productsFiltered = products.filter((product) => {
       return (
         isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
@@ -205,7 +210,21 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     });
 
     setChart(productsSelected);
+
+    return;
+  }
+
+  useEffect(() => {
+    addLettersChart();
+    // setUpdate(!update);
   }, [letters, color, size]);
+
+  useEffect(() => {
+    if (update) {
+      addLettersChart();
+      setUpdate(!update);
+    }
+  }, [update]);
 
   useEffect(() => {
     let productsFiltered = [
@@ -236,10 +255,8 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   }, [kits, color, type]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLetters("520");
-    }, 2000);
-  }, []);
+    setLetters("520");
+  }, [products]);
 
   return (
     <Card className="w-full max-w-[236px] md:max-w-[618px] lg:max-w-full lg:w-full h-auto">
@@ -253,33 +270,35 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
 
       <Separator />
       <CardContent
-        className="flex flex-1 w-full max-w-[804px] h-full min-h-[120px] justify-center items-center content-center break-words gap-6 p-6"
+        className="flex flex-1 w-full max-w-[804px] h-full min-h-[120px] justify-center items-center content-center break-words gap-6 p-2"
         style={{ background: colorBackground }}
       >
-        <div className="flex w-full flex-row justify-center items-center content-center">
-          {chart?.length > 0
-            ? chart?.map((product, index) => {
-                if (product?.id === -1) {
-                  return (
-                    <div
-                      key={index}
-                      className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] lg:w-[90px] lg:h-[90px] p-1 flex justify-center items-center"
-                    >
-                      <span className="text-2xl"> </span>
-                    </div>
-                  );
-                } else {
-                  return (
-                    <img
-                      key={index}
-                      src={product?.images[0]?.src ?? ""}
-                      alt={product?.name?.pt}
-                      className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] lg:w-[90px] lg:h-[90px] p-1"
-                    />
-                  );
-                }
-              })
-            : null}
+        <div className="flex flex-wrap w-full h-full flex-row justify-center items-center content-center break-words p-4">
+          {products?.length === 0 ? (
+            <Skeleton className="flex flex-wrap flex-1 max-w-[804px] min-h-[120px] h-full w-full bg-slate-500" />
+          ) : chart?.length > 0 ? (
+            chart?.map((product, index) => {
+              if (product?.id === -1) {
+                return (
+                  <div
+                    key={index}
+                    className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] lg:w-[90px] lg:h-[90px] p-1 flex justify-center items-center"
+                  >
+                    <span className="text-2xl"> </span>
+                  </div>
+                );
+              } else {
+                return (
+                  <img
+                    key={index}
+                    src={product?.images[0]?.src ?? ""}
+                    alt={product?.name?.pt}
+                    className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] lg:w-[90px] lg:h-[90px] p-1"
+                  />
+                );
+              }
+            })
+          ) : null}
         </div>
       </CardContent>
     </Card>

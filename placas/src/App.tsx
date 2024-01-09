@@ -39,6 +39,7 @@ function App() {
     cepError,
     chart,
     kitAccentuation,
+    subtotal,
   } = useFormContext();
 
   const [erro, setErro] = useState("");
@@ -227,7 +228,7 @@ function App() {
             />
             <CardItem
               title={I18n.MAIN_FORM.CARDS.SUBTOTAL.TITLE}
-              text={formatMoney(quantity * 6.9)}
+              text={formatMoney(subtotal)}
               observation={I18n.MAIN_FORM.CARDS.SUBTOTAL.DESCRIPTION}
             />
             <CardItem

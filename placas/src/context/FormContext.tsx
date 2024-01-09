@@ -41,6 +41,8 @@ type FormContextData = {
   setCepError: React.Dispatch<React.SetStateAction<string>>;
   kitAccentuation: ProductList;
   setKitAccentuation: React.Dispatch<React.SetStateAction<ProductList>>;
+  setSubtotal: React.Dispatch<React.SetStateAction<number>>;
+  subtotal: number;
 };
 
 const FormContext = createContext({} as FormContextData);
@@ -58,6 +60,8 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
   const [shippingCost, setShippingCost] = useState<number>(0);
   const [city, setCity] = useState<string>("");
   const [state, setState] = useState<string>("");
+
+  const [subtotal, setSubtotal] = useState<number>(0);
 
   const [cepError, setCepError] = useState<string>("");
 
@@ -101,11 +105,20 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
       }
     });
 
-    setTotal(lettersFiltered.length * 6.9 + shippingCost);
+    let t = 0;
+    if (lettersFiltered.length > 0) {
+      chart.map((letter) => {
+        t += parseFloat(letter.variants[0].price) ?? 6.9;
+      });
+    }
+
+    setSubtotal(t + shippingCost);
+
+    setTotal(t + shippingCost);
   }, [chart]);
 
   useEffect(() => {
-    setTotal(quantity * 6.9 + shippingCost);
+    setTotal(subtotal + shippingCost);
   }, [shippingCost]);
 
   const contextValue = {
@@ -140,6 +153,8 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     setCepError,
     kitAccentuation,
     setKitAccentuation,
+    subtotal,
+    setSubtotal,
   };
 
   return (

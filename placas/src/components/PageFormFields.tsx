@@ -33,6 +33,7 @@ export const PageFormFields: React.FC = () => {
     cepError,
     setCepError,
     weight,
+    setChart,
   } = useFormContext();
 
   const FONT_TYPE = I18n.MAIN_FORM.VALUES.FONT_TYPE;
@@ -41,10 +42,18 @@ export const PageFormFields: React.FC = () => {
 
   const [open, setOpen] = useState(false);
   const [openWeight, setOpenWeight] = useState(false);
-  const [img, setImg] = useState("");
+  const [img, setImg] = useState<string | string[]>("");
   const [kits, setKits] = useState(0);
 
+  const [update, setUpdate] = useState(false);
+
   const [productsInStock, setProductsInStock] = useState(products);
+
+  useEffect(() => {
+    if (!open) {
+      setImg("");
+    }
+  }, [open]);
 
   useEffect(() => {
     setProductsInStock(products);
@@ -52,30 +61,61 @@ export const PageFormFields: React.FC = () => {
 
   useEffect(() => {
     setProductsInStock(products);
-    setLetters("");
-    // revalidateLetters();
+    revalidateLetters();
   }, [color, type, size]);
 
   function revalidateLetters() {
     let copyLetters = letters;
 
     let newLetters = "";
+    let regex: RegExp;
+
+    let openTheModal = false;
+
+    if (
+      (size === "30mm" && type === "QUADRADO") ||
+      (size === "130mm" && type === "REDONDO")
+    ) {
+      regex = /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ -\/\\,.^]*$/;
+    } else {
+      regex = /^[0-9 -.,/\\]*$/;
+    }
+
+    copyLetters = copyLetters
+      .split("")
+      .filter((letter) => regex.test(letter))
+      .join("");
+
+    let ktNeeded = contarUnidades(copyLetters);
+
+    if (
+      color !== undefined &&
+      size !== undefined &&
+      type !== undefined &&
+      products.length > 0
+    ) {
+      if (getKits()?.variants[0].inventory_levels[0].stock !== null) {
+        if (ktNeeded > (getKits().variants[0].inventory_levels[0].stock ?? 0)) {
+          // abre o modal de produto fora de estoque
+
+          setImg(getKits().images[0]?.src ?? getKits().name.pt);
+          // remove the special characters
+          regex = /^[A-Za-z0-9]*$/;
+          copyLetters = copyLetters
+            .split("")
+            .filter((letter) => regex.test(letter))
+            .join("");
+        }
+      }
+    }
 
     copyLetters
       .slice()
       .split("")
       .forEach((letter) => {
         const value = letter;
-        let regex;
         let prod: Product;
         let hasStock = true;
-
-        if (size === "30mm" || size === "130mm") {
-          regex =
-            /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ -\/\\,.^]*$/;
-        } else {
-          regex = /^[0-9 -.,/\\]*$/;
-        }
 
         // se for espaço ignora toda a validação de estoque
         if (value.slice()[value.slice().length - 1] !== " ") {
@@ -103,66 +143,64 @@ export const PageFormFields: React.FC = () => {
             return;
           }
 
-          // Esta inserindo um caractere
-          if (value.length > letters.length) {
-            // Esta inserindo um caractere
+          // checa se é um caractere especial
+          if (isSpecialChar(value)) {
+            // // verifica se precisa incrementar a qtd de kits
+            // let kitsNeeded = contarUnidades(value.slice());
+            // if (kitsNeeded > kits) {
+            //   // subtrai uma unidade na qtd de kits disponíveis
+            //   hasStock = changeStock(getKits(), -1);
+            // } else if (kitsNeeded < kits) {
+            //   // acrescenta uma unidade na qtd de kits disponíveis
+            //   // não sei se vai acontecer isso, mas só pra garantir
+            //   hasStock = changeStock(getKits(), 1);
+            // }
+            // if (hasStock) {
+            //   setKits(kitsNeeded);
+            // }
+            // prod = whichSpecialCharIs(value);
+            // // se prod for undefined então é um caractere especial sozinho
+            // // e ja foi atualizado o estoque
+            // if (prod !== undefined) {
+            //   // encontra o index do produto
+            //   let index = productsInStock.findIndex(
+            //     (product) => product.id === prod.id
+            //   );
+            //   // decrementa o estoque
+            //   hasStock = changeStock(productsInStock[index], -1);
+            // }
+          } else {
+            // não é um caractere especial
 
-            // checa se é um caractere especial
-            if (isSpecialChar(value)) {
-              // verifica se precisa incrementar a qtd de kits
-              let kitsNeeded = contarUnidades(value.slice());
+            prod = searchProduct(value.slice()[value.slice().length - 1]);
 
-              if (kitsNeeded > kits) {
-                // subtrai uma unidade na qtd de kits disponíveis
-                hasStock = changeStock(getKits(), -1);
-              } else if (kitsNeeded < kits) {
-                // acrescenta uma unidade na qtd de kits disponíveis
-                // não sei se vai acontecer isso, mas só pra garantir
-                hasStock = changeStock(getKits(), 1);
-              }
+            // encontra o index do produto
+            let index = productsInStock.findIndex(
+              (product) => product.id === prod.id
+            );
 
-              if (hasStock) {
-                setKits(kitsNeeded);
-              }
+            // decrementa o estoque
 
-              prod = whichSpecialCharIs(value);
-
-              // se prod for undefined então é um caractere especial sozinho
-              // e ja foi atualizado o estoque
-              if (prod !== undefined) {
-                // encontra o index do produto
-                let index = productsInStock.findIndex(
-                  (product) => product.id === prod.id
-                );
-
-                // decrementa o estoque
-                hasStock = changeStock(productsInStock[index], -1);
-              }
-            } else {
-              // não é um caractere especial
-
-              prod = searchProduct(value.slice()[value.slice().length - 1]);
-
-              // encontra o index do produto
-              let index = productsInStock.findIndex(
-                (product) => product.id === prod.id
-              );
-
-              // decrementa o estoque
-
-              hasStock = changeStock(productsInStock[index], -1);
-            }
+            hasStock = changeStock(productsInStock[index], -1, true);
           }
 
           if (hasStock) {
             newLetters += value.toUpperCase();
+          } else {
+            openTheModal = true;
           }
         } else {
           newLetters += value.toUpperCase();
         }
       });
 
+    if (openTheModal) {
+      setOpen(true);
+    }
+
+    setChart([]);
     setLetters(newLetters);
+    setUpdate(true);
   }
 
   /**
@@ -274,10 +312,7 @@ export const PageFormFields: React.FC = () => {
     return products.filter((product) => {
       return (
         isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
-        isExactMatch(
-          product.name.pt.toLowerCase(),
-          type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
-        ) &&
+        isExactMatch(product.name.pt.toLowerCase(), type.toLowerCase()) &&
         isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
       );
     })[0];
@@ -287,14 +322,21 @@ export const PageFormFields: React.FC = () => {
     return a.toUpperCase() === product.name.pt.split("-")[1]?.toUpperCase();
   }
 
-  function changeStock(product: Product, quantity: number) {
+  function changeStock(
+    product: Product,
+    quantity: number,
+    dontOpenTheModal?: boolean = false
+  ) {
     // encontra o index do produto
     let index = productsInStock.findIndex(
       (_product) => _product.id === product.id
     );
 
     if (quantity < 0) {
-      if (productsInStock[index].variants[0].weight * 1000 + weight >= 270) {
+      if (
+        (productsInStock[index].variants[0].weight ?? 0) * 1000 + weight >=
+        270
+      ) {
         // abre o modal de peso máximo excedido
         setOpenWeight(true);
         return false;
@@ -306,20 +348,22 @@ export const PageFormFields: React.FC = () => {
 
       // checa se a quantidade de estoque é maior que 0
       if (
-        productsInStock[index].variants[0].inventory_levels[0].stock +
+        (productsInStock[index].variants[0].inventory_levels[0].stock ?? 0) +
           quantity >=
         0
       ) {
         // altera a quantidade de estoque
         productsInStock[index].variants[0].inventory_levels[0].stock =
-          productsInStock[index].variants[0].inventory_levels[0].stock +
+          (productsInStock[index].variants[0].inventory_levels[0].stock ?? 0) +
           quantity;
 
         return true;
       } else {
         // abre o modal de produto fora de estoque
-        setOpen(true);
-        setImg(product.images[0]?.src ?? product.name.pt);
+        setImg((prev) => [...prev, product.images[0]?.src ?? product.name.pt]);
+        if (!dontOpenTheModal) {
+          setOpen(true);
+        }
         return false;
       }
     }
@@ -416,7 +460,12 @@ export const PageFormFields: React.FC = () => {
       <div>
         <form>
           <div className="grid w-full items-center gap-4">
-            <ChartsVisualization letters={letters} products={products} />
+            <ChartsVisualization
+              letters={letters}
+              products={products}
+              setUpdate={setUpdate}
+              update={update}
+            />
 
             <div className="flex flex-1 flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:max-w-full lg:w-full">
               <Label htmlFor="cep" className="text-end">
@@ -433,11 +482,18 @@ export const PageFormFields: React.FC = () => {
                   let prod: Product;
                   let hasStock = true;
 
-                  if (size === "30mm" || size === "130mm") {
+                  if (
+                    (size === "30mm" && type === "QUADRADO") ||
+                    (size === "130mm" && type === "REDONDO")
+                  ) {
                     regex =
                       /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ -\/\\,.^]*$/;
                   } else {
                     regex = /^[0-9 -.,/\\]*$/;
+                  }
+
+                  if (!regex.test(value.slice())) {
+                    return;
                   }
 
                   if (
@@ -614,55 +670,14 @@ export const PageFormFields: React.FC = () => {
             <div className="flex flex-1 lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
               <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
                 <Label htmlFor="fontType" className="text-end">
-                  {I18n.MAIN_FORM.LABELS.FONT_TYPE}
-                </Label>
-                <Select
-                  onValueChange={(e) => {
-                    setType(e);
-                  }}
-                  defaultValue={type}
-                >
-                  <SelectTrigger id="fontType'">
-                    <SelectValue
-                      placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_TYPE}
-                    />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    {size === "30mm" ? (
-                      <>
-                        <SelectItem
-                          key={FONT_TYPE.TYPE_2.KEY}
-                          value={FONT_TYPE.TYPE_2.KEY}
-                        >
-                          {FONT_TYPE.TYPE_2.VALUE}
-                        </SelectItem>
-                      </>
-                    ) : (
-                      <>
-                        <SelectItem
-                          key={FONT_TYPE.TYPE_1.KEY}
-                          value={FONT_TYPE.TYPE_1.KEY}
-                        >
-                          {FONT_TYPE.TYPE_1.VALUE}
-                        </SelectItem>
-                        <SelectItem
-                          key={FONT_TYPE.TYPE_2.KEY}
-                          value={FONT_TYPE.TYPE_2.KEY}
-                        >
-                          {FONT_TYPE.TYPE_2.VALUE}
-                        </SelectItem>
-                      </>
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
-                <Label htmlFor="fontType" className="text-end">
                   {I18n.MAIN_FORM.LABELS.FONT_SIZE}
                 </Label>
                 <Select
                   onValueChange={(e) => {
+                    if (e === "30mm" || e === "180mm") {
+                      setType("QUADRADO");
+                    }
+
                     setSize(e);
                   }}
                   defaultValue={size}
@@ -678,6 +693,71 @@ export const PageFormFields: React.FC = () => {
                         {item.VALUE}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
+                <Label htmlFor="fontType" className="text-end">
+                  {I18n.MAIN_FORM.LABELS.FONT_TYPE}
+                </Label>
+                <Select
+                  onValueChange={(e) => {
+                    setType(e);
+                  }}
+                  defaultValue={type}
+                >
+                  <SelectTrigger id="fontType'">
+                    <SelectValue
+                      placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_TYPE}
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    {/* classico redondo
+                      moderno quadrado
+                   */}
+                    {size === "30mm" ? (
+                      <SelectItem
+                        key={FONT_TYPE.TYPE_2.KEY}
+                        value={FONT_TYPE.TYPE_2.KEY}
+                      >
+                        {FONT_TYPE.TYPE_2.VALUE}
+                      </SelectItem>
+                    ) : // regex se tem apenas números
+                    size === "130mm" &&
+                      new RegExp(/^[0-9 -.,/\\]*$/).test(letters) ? (
+                      <>
+                        <SelectItem
+                          key={FONT_TYPE.TYPE_1.KEY}
+                          value={FONT_TYPE.TYPE_1.KEY}
+                        >
+                          {FONT_TYPE.TYPE_1.VALUE}
+                        </SelectItem>
+                        <SelectItem
+                          key={FONT_TYPE.TYPE_2.KEY}
+                          value={FONT_TYPE.TYPE_2.KEY}
+                        >
+                          {FONT_TYPE.TYPE_2.VALUE}
+                        </SelectItem>
+                      </>
+                    ) : size === "130mm" &&
+                      !new RegExp(/^[0-9 -.,/\\]*$/).test(letters) ? (
+                      <>
+                        <SelectItem
+                          key={FONT_TYPE.TYPE_1.KEY}
+                          value={FONT_TYPE.TYPE_1.KEY}
+                        >
+                          {FONT_TYPE.TYPE_1.VALUE}
+                        </SelectItem>
+                      </>
+                    ) : (
+                      <SelectItem
+                        key={FONT_TYPE.TYPE_2.KEY}
+                        value={FONT_TYPE.TYPE_2.KEY}
+                      >
+                        {FONT_TYPE.TYPE_2.VALUE}
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
