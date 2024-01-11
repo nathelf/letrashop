@@ -108,11 +108,13 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     let t = 0;
     if (lettersFiltered.length > 0) {
       chart.map((letter) => {
-        t += parseFloat(letter.variants[0].price) ?? 6.9;
+        if (letter.id !== -1) {
+          t += parseFloat(letter.variants[0].price) ?? 6.9;
+        }
       });
     }
 
-    setSubtotal(t + shippingCost);
+    setSubtotal(t);
 
     setTotal(t + shippingCost);
   }, [chart]);
