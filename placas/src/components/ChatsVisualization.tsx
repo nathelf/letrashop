@@ -13,6 +13,7 @@ type ChartsVisualizationProps = {
   letters: string;
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   update: boolean;
+  colorBackground: string;
 };
 
 export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
@@ -20,10 +21,11 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   letters,
   setUpdate,
   update,
+  colorBackground,
 }) => {
   const { color, chart, setChart, setLetters, size, type, setKitAccentuation } =
     useFormContext();
-  const [colorBackground, setColorBackGround] = useState("#E0E0E0");
+  // const [colorBackground, setColorBackGround] = useState("#E0E0E0");
 
   const [kits, setKits] = useState(0);
 
@@ -134,7 +136,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     let productsSelected: ProductList = [];
 
     [...letters].map((letter, index) => {
-      if (letter !== " ") {
+      if (letter !== " " && letter !== "\n") {
         productsFiltered.map((product) => {
           if (letter === product.name.pt.split("-")[1]) {
             productsSelected.push(product);
@@ -183,27 +185,51 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
           }
         });
       } else {
-        productsSelected.push({
-          id: -1,
-          name: { pt: " " },
-          description: { pt: " " },
-          handle: { pt: " " },
-          attributes: [],
-          published: true,
-          free_shipping: true,
-          requires_shipping: true,
-          canonical_url: "",
-          video_url: null,
-          seo_title: { pt: null },
-          seo_description: { pt: null },
-          brand: null,
-          created_at: "",
-          updated_at: "",
-          variants: [],
-          tags: "",
-          images: [],
-          categories: [],
-        });
+        if (letter === " ") {
+          productsSelected.push({
+            id: -1,
+            name: { pt: " " },
+            description: { pt: " " },
+            handle: { pt: " " },
+            attributes: [],
+            published: true,
+            free_shipping: true,
+            requires_shipping: true,
+            canonical_url: "",
+            video_url: null,
+            seo_title: { pt: null },
+            seo_description: { pt: null },
+            brand: null,
+            created_at: "",
+            updated_at: "",
+            variants: [],
+            tags: "",
+            images: [],
+            categories: [],
+          });
+        } else {
+          productsSelected.push({
+            id: -2,
+            name: { pt: "break-line" },
+            description: { pt: "break-line" },
+            handle: { pt: "break-line" },
+            attributes: [],
+            published: true,
+            free_shipping: true,
+            requires_shipping: true,
+            canonical_url: "",
+            video_url: null,
+            seo_title: { pt: null },
+            seo_description: { pt: null },
+            brand: null,
+            created_at: "",
+            updated_at: "",
+            variants: [],
+            tags: "",
+            images: [],
+            categories: [],
+          });
+        }
       }
 
       contarUnidades(letters);
@@ -258,31 +284,46 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     setLetters("520");
   }, [products]);
 
+  let lines = 0;
+
   return (
-    <Card className="w-full max-w-[236px] md:max-w-[618px] lg:max-w-full lg:w-full h-auto">
-      <CardHeader className="flex flex-1 items-center gap-2 flex-col md:flex-row lg:flex-row p-2">
-        {/* <CardTitle>{I18n.MAIN_FORM.LABELS.VISUALIZATION}</CardTitle> */}
-        <ColorPickerDialog
+    <Card className="w-full max-w-full md:max-w-[618px] lg:max-w-full lg:w-full h-auto">
+      {/* <CardHeader className="flex flex-1 items-center gap-2 flex-col md:flex-row lg:flex-row p-2"> */}
+      {/* <CardTitle>{I18n.MAIN_FORM.LABELS.VISUALIZATION}</CardTitle> */}
+      {/* <ColorPickerDialog
           color={colorBackground}
           setColor={setColorBackGround}
-        />
-      </CardHeader>
+        /> */}
+      {/* </CardHeader> */}
 
       <Separator />
+      {/* break-words  */}
       <CardContent
-        className="flex flex-1 w-full max-w-[804px] h-full min-h-[120px] justify-center items-center content-center break-words gap-6 p-2"
+        className="flex flex-1 w-full whitespace-pre-wrap max-w-[804px] h-full min-h-[120px] justify-center items-center content-center gap-6 p-2"
         style={{ background: colorBackground }}
       >
-        <div className="flex flex-wrap w-full h-full flex-row justify-center items-center content-center break-words p-4">
+        {/* */}
+        <div className="flex overflow-auto flex-wrap break-words flex-row whitespace-pre-wrap w-full h-full justify-center items-center content-center p-4">
           {products?.length === 0 ? (
             <Skeleton className="flex flex-wrap flex-1 max-w-[804px] min-h-[120px] h-full w-full bg-slate-500" />
           ) : chart?.length > 0 ? (
             chart?.map((product, index) => {
+              console.log(lines);
               if (product?.id === -1) {
                 return (
                   <div
                     key={index}
                     className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] lg:w-[90px] lg:h-[90px] p-1 flex justify-center items-center"
+                  >
+                    <span className="text-2xl"> </span>
+                  </div>
+                );
+              } else if (product?.id === -2) {
+                return (
+                  <div
+                    key={index}
+                    className="w-full h-[40px] md:h-[60px] lg:h-[90px] p-1 flex justify-center items-center"
+                    style={{ margin: "10px 0" }}
                   >
                     <span className="text-2xl"> </span>
                   </div>

@@ -207,11 +207,15 @@ function App() {
 
   return (
     <main className="flex items-center justify-center w-full h-full overflow-x-auto">
-      <Card className="w-full max-w-xs sm:max-w-[300px] md:max-w-[700px] lg:max-w-[886px] xl:max-w-[886px] mx-auto p-4">
+      <Card className="w-full max-w-full sm:max-w-full md:max-w-[700px] lg:max-w-[886px] xl:max-w-[886px] mx-auto p-4">
         <CardHeader className={"flex flex-1 justify-center items-center"}>
           <CardTitle className={"flex flex-1 font-bold text-5xl"}>
             {/* {I18n.MAIN_FORM.TITLE} */}
-            <img src={logo} alt="Logo" className="w-[350px] h-[100px]" />
+            <img
+              src={logo}
+              alt="Logo"
+              className="w-full h-[66px] sm:h-[66px] md:h-[66px] lg:h-[100px]"
+            />
           </CardTitle>
         </CardHeader>
         <CardContent>

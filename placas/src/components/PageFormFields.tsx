@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import { AlertProduct } from "./AlertProduct";
 import { Product } from "../types/types";
 import { AlertWeight } from "./AlertWeight";
+import { Textarea } from "./ui/textarea";
+import { ColorPickerDialog } from "./ColorPickerDialog";
 
 export const PageFormFields: React.FC = () => {
   const {
@@ -44,6 +46,7 @@ export const PageFormFields: React.FC = () => {
   const [openWeight, setOpenWeight] = useState(false);
   const [img, setImg] = useState<string | string[]>("");
   const [kits, setKits] = useState(0);
+  const [colorBackground, setColorBackGround] = useState("#E0E0E0");
 
   const [update, setUpdate] = useState(false);
 
@@ -465,15 +468,16 @@ export const PageFormFields: React.FC = () => {
               products={products}
               setUpdate={setUpdate}
               update={update}
+              colorBackground={colorBackground}
             />
 
-            <div className="flex flex-1 flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:max-w-full lg:w-full">
+            <div className="flex flex-1 flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:max-w-full lg:w-full">
               <Label htmlFor="cep" className="text-end">
                 {size === "30mm" || size === "130mm"
                   ? I18n.MAIN_FORM.LABELS.LETTERS_AND_NUMBERS
                   : I18n.MAIN_FORM.LABELS.NUMBERS}
               </Label>
-              <Input
+              <Textarea
                 id="letters"
                 value={letters}
                 onChange={(e) => {
@@ -487,9 +491,9 @@ export const PageFormFields: React.FC = () => {
                     (size === "130mm" && type === "REDONDO")
                   ) {
                     regex =
-                      /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ -\/\\,.^]*$/;
+                      /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ \n-\/\\,.^]*$/;
                   } else {
-                    regex = /^[0-9 -.,/\\]*$/;
+                    regex = /^[0-9 \n-.,/\\]*$/;
                   }
 
                   if (!regex.test(value.slice())) {
@@ -498,14 +502,18 @@ export const PageFormFields: React.FC = () => {
 
                   if (
                     value.length < letters.length &&
-                    letters.slice()[letters.slice().length - 1] === " "
+                    (letters.slice()[letters.slice().length - 1] === " " ||
+                      letters.slice()[letters.slice().length - 1] === "\n")
                   ) {
                     setLetters(value.toUpperCase());
                     return;
                   }
 
                   // se for espaço ignora toda a validação de estoque
-                  if (value.slice()[value.slice().length - 1] !== " ") {
+                  if (
+                    value.slice()[value.slice().length - 1] !== " " &&
+                    value.slice()[value.slice().length - 1] !== "\n"
+                  ) {
                     // Verifica se o valor atual corresponde à expressão regular
                     if (!regex.test(value.slice())) {
                       if (value === "") {
@@ -668,7 +676,7 @@ export const PageFormFields: React.FC = () => {
             </div>
 
             <div className="flex flex-1 lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
-              <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
+              <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
                 <Label htmlFor="fontType" className="text-end">
                   {I18n.MAIN_FORM.LABELS.FONT_SIZE}
                 </Label>
@@ -697,7 +705,7 @@ export const PageFormFields: React.FC = () => {
                 </Select>
               </div>
 
-              <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
+              <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
                 <Label htmlFor="fontType" className="text-end">
                   {I18n.MAIN_FORM.LABELS.FONT_TYPE}
                 </Label>
@@ -764,32 +772,48 @@ export const PageFormFields: React.FC = () => {
             </div>
 
             <div className="flex lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
-              <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
-                <Label htmlFor="fontType" className="text-end">
-                  {I18n.MAIN_FORM.LABELS.FONT_COLOR}
-                </Label>
-                <Select
-                  onValueChange={(e) => {
-                    setColor(e);
-                  }}
-                  defaultValue={color}
-                >
-                  <SelectTrigger id="fontColor">
-                    <SelectValue
-                      placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
+              <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
+                <div className="flex lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4 items-end">
+                  <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
+                    <Label htmlFor="fontType" className="text-end">
+                      {I18n.MAIN_FORM.LABELS.FONT_COLOR}
+                    </Label>
+                    <Select
+                      onValueChange={(e) => {
+                        setColor(e);
+                      }}
+                      defaultValue={color}
+                    >
+                      <SelectTrigger id="fontColor">
+                        <SelectValue
+                          placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
+                        />
+                      </SelectTrigger>
+                      <SelectContent position="popper">
+                        {Object.values(FONT_COLOR).map((item) => (
+                          <SelectItem key={item.KEY} value={item.VALUE}>
+                            {item.VALUE}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
+                    <ColorPickerDialog
+                      color={colorBackground}
+                      setColor={setColorBackGround}
                     />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    {Object.values(FONT_COLOR).map((item) => (
-                      <SelectItem key={item.KEY} value={item.VALUE}>
-                        {item.VALUE}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  </div>
+                </div>
+
+                {/* <ColorPickerDialog
+                  color={colorBackground}
+                  setColor={setColorBackGround}
+                /> */}
               </div>
 
-              <div className="flex flex-col space-y-1.5 w-full max-w-[236px] md:max-w-[618px] lg:w-full">
+              <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
                 <Label htmlFor="cep" className="text-end">
                   {I18n.MAIN_FORM.LABELS.ZIP_CODE}
                 </Label>

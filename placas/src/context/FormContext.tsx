@@ -98,7 +98,7 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     setWeight(0);
 
     chart.map((product) => {
-      if (product.id !== -1) {
+      if (product.id !== -1 && product.id !== -2) {
         setWeight(
           (prev) => prev + parseFloat(product.variants[0].weight) * 1000
         );
@@ -108,7 +108,7 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     let t = 0;
     if (lettersFiltered.length > 0) {
       chart.map((letter) => {
-        if (letter.id !== -1) {
+        if (letter.id !== -1 && letter.id !== -2) {
           t += parseFloat(letter.variants[0].price) ?? 6.9;
         }
       });
