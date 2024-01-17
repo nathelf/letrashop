@@ -211,11 +211,7 @@ function App() {
         <CardHeader className={"flex flex-1 justify-center items-center"}>
           <CardTitle className={"flex flex-1 font-bold text-5xl"}>
             {/* {I18n.MAIN_FORM.TITLE} */}
-            <img
-              src={logo}
-              alt="Logo"
-              className="w-full h-[66px] sm:h-[66px] md:h-[66px] lg:h-[100px]"
-            />
+            <img src={logo} alt="Logo" className="w-[200px] h-[50px]" />
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -238,10 +234,7 @@ function App() {
             <CardItem
               title={I18n.MAIN_FORM.CARDS.SHIPPING_COST.TITLE}
               text={formatMoney(shippingCost)}
-              observation={
-                I18n.MAIN_FORM.CARDS.SHIPPING_COST.DESCRIPTION +
-                (weight <= 300 ? " (Mini envio)" : " (PAC)")
-              }
+              observation={I18n.MAIN_FORM.CARDS.SHIPPING_COST.DESCRIPTION}
             />
             <CardItem
               title={I18n.MAIN_FORM.CARDS.TOTAL.TITLE}
@@ -254,12 +247,12 @@ function App() {
             <CardItem
               title={"Peso total"}
               text={`${weight ?? 0} gramas`}
-              observation={"Campo para validação do peso total"}
+              observation={"Peso aproximado do pedido"}
             />
             <CardItem
               title={"Kits de acentuação"}
-              text={`${kitAccentuation?.length ?? 0} kits`}
-              observation={"Campo para validação da quantidade total de kits"}
+              text={`${kitAccentuation?.length ?? 0} kit(s)`}
+              observation={"Kit(s) utilizados para acentuação e pontuação"}
             />
           </div>
         </div>

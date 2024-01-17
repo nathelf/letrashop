@@ -7,13 +7,21 @@ import { useFormContext } from "../context/useFormContext";
 
 import { ColorPickerDialog } from "./ColorPickerDialog";
 import { Skeleton } from "./ui/skelleton";
+import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 type ChartsVisualizationProps = {
   products: ProductList;
   letters: string;
   setUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   update: boolean;
-  colorBackground: string;
+  // colorBackground: string;
 };
 
 export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
@@ -21,11 +29,21 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   letters,
   setUpdate,
   update,
-  colorBackground,
+  // colorBackground,
 }) => {
-  const { color, chart, setChart, setLetters, size, type, setKitAccentuation } =
-    useFormContext();
-  // const [colorBackground, setColorBackGround] = useState("#E0E0E0");
+  const FONT_COLOR = I18n.MAIN_FORM.VALUES.FONT_COLOR;
+
+  const {
+    color,
+    chart,
+    setChart,
+    setLetters,
+    size,
+    type,
+    setKitAccentuation,
+    setColor,
+  } = useFormContext();
+  const [colorBackground, setColorBackGround] = useState("#E0E0E0");
 
   const [kits, setKits] = useState(0);
 
@@ -97,7 +115,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
 
     setKits(kitsNeeded);
 
-    return 0;
+    return kitsNeeded;
   }
 
   /**
@@ -231,9 +249,25 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
           });
         }
       }
-
-      contarUnidades(letters);
     });
+
+    let kits = contarUnidades(letters);
+
+    let kit = products.filter((product) => {
+      return (
+        isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
+        isExactMatch(
+          product.name.pt.toLowerCase(),
+          type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
+        ) &&
+        isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
+      );
+    })[0];
+
+    for (let index = 0; index < kits; index++) {
+      // add the kits to the chart
+      productsSelected.push(kit);
+    }
 
     setChart(productsSelected);
 
@@ -288,13 +322,41 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
 
   return (
     <Card className="w-full max-w-full md:max-w-[618px] lg:max-w-full lg:w-full h-auto">
-      {/* <CardHeader className="flex flex-1 items-center gap-2 flex-col md:flex-row lg:flex-row p-2"> */}
-      {/* <CardTitle>{I18n.MAIN_FORM.LABELS.VISUALIZATION}</CardTitle> */}
-      {/* <ColorPickerDialog
+      <CardHeader className="flex flex-1 items-center gap-8 flex-col md:flex-row lg:flex-row p-2 justify-between">
+        {/* <CardTitle>{I18n.MAIN_FORM.LABELS.VISUALIZATION}</CardTitle> */}
+        <ColorPickerDialog
           color={colorBackground}
           setColor={setColorBackGround}
-        /> */}
-      {/* </CardHeader> */}
+        />
+        <div className="flex flex-1 flex-col xl:flex-row lg:flex-row md:flex-row sm:flex-col gap-4 items-center justify-end">
+          <Label
+            htmlFor="fontType"
+            className="text-end w-full flex-grow min-w-[200px]"
+          >
+            {I18n.MAIN_FORM.LABELS.FONT_COLOR}
+          </Label>
+          <Select
+            onValueChange={(e) => {
+              setColor(e);
+            }}
+            defaultValue={color}
+          >
+            <SelectTrigger id="fontColor" className="w-full min-w-[200px]">
+              <SelectValue
+                placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
+                className="w-full max-w-[200px]"
+              />
+            </SelectTrigger>
+            <SelectContent position="popper" className="w-full min-w-[200px]">
+              {Object.values(FONT_COLOR).map((item) => (
+                <SelectItem key={item.KEY} value={item.VALUE}>
+                  {item.VALUE}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </CardHeader>
 
       <Separator />
       {/* break-words  */}
@@ -308,7 +370,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
             <Skeleton className="flex flex-wrap flex-1 max-w-[804px] min-h-[120px] h-full w-full bg-slate-500" />
           ) : chart?.length > 0 ? (
             chart?.map((product, index) => {
-              console.log(lines);
               if (product?.id === -1) {
                 return (
                   <div
@@ -328,7 +389,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
                     <span className="text-2xl"> </span>
                   </div>
                 );
-              } else {
+              } else if (!product.name.pt.toLowerCase().includes("kit")) {
                 return (
                   <img
                     key={index}

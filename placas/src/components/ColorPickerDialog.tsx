@@ -33,7 +33,7 @@ export const ColorPickerDialog: React.FC<ColorPickerDialogProps> = ({
             className="block w-6 h-6 rounded-full shadow-md"
             style={{ background: color }}
           ></span>
-          {"Cor da parede"}
+          {"Definir cor da parede"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

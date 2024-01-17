@@ -335,16 +335,16 @@ export const PageFormFields: React.FC = () => {
       (_product) => _product.id === product.id
     );
 
-    if (quantity < 0) {
-      if (
-        (productsInStock[index].variants[0].weight ?? 0) * 1000 + weight >=
-        270
-      ) {
-        // abre o modal de peso máximo excedido
-        setOpenWeight(true);
-        return false;
-      }
-    }
+    // if (quantity < 0) {
+    //   if (
+    //     (productsInStock[index].variants[0].weight ?? 0) * 1000 + weight >=
+    //     270
+    //   ) {
+    //     // abre o modal de peso máximo excedido
+    //     setOpenWeight(true);
+    //     return false;
+    //   }
+    // }
 
     if (productsInStock[index].variants[0].inventory_levels[0].stock !== null) {
       // checa se o peso do produto que será adicionado ao carrinho é maior que o peso máximo permitido (270g)
@@ -773,45 +773,38 @@ export const PageFormFields: React.FC = () => {
 
             <div className="flex lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4">
               <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
-                <div className="flex lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4 items-end">
-                  <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
-                    <Label htmlFor="fontType" className="text-end">
-                      {I18n.MAIN_FORM.LABELS.FONT_COLOR}
-                    </Label>
-                    <Select
-                      onValueChange={(e) => {
-                        setColor(e);
-                      }}
-                      defaultValue={color}
-                    >
-                      <SelectTrigger id="fontColor">
-                        <SelectValue
-                          placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
-                        />
-                      </SelectTrigger>
-                      <SelectContent position="popper">
-                        {Object.values(FONT_COLOR).map((item) => (
-                          <SelectItem key={item.KEY} value={item.VALUE}>
-                            {item.VALUE}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
-                    <ColorPickerDialog
-                      color={colorBackground}
-                      setColor={setColorBackGround}
+                {/* <div className="flex lg:flex-row md:flex-row sm:flex-col flex-col w-full gap-4 items-end">
+                  <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full"> */}
+                {/* <Label htmlFor="fontType" className="text-end">
+                  {I18n.MAIN_FORM.LABELS.FONT_COLOR}
+                </Label>
+                <Select
+                  onValueChange={(e) => {
+                    setColor(e);
+                  }}
+                  defaultValue={color}
+                >
+                  <SelectTrigger id="fontColor">
+                    <SelectValue
+                      placeholder={I18n.MAIN_FORM.PLACEHOLDERS.FONT_COLOR}
                     />
-                  </div>
-                </div>
+                  </SelectTrigger>
+                  <SelectContent position="popper">
+                    {Object.values(FONT_COLOR).map((item) => (
+                      <SelectItem key={item.KEY} value={item.VALUE}>
+                        {item.VALUE}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select> */}
+                {/* </div> */}
+              </div>
 
-                {/* <ColorPickerDialog
+              {/* <ColorPickerDialog
                   color={colorBackground}
                   setColor={setColorBackGround}
                 /> */}
-              </div>
+              {/* </div> */}
 
               <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
                 <Label htmlFor="cep" className="text-end">
@@ -846,7 +839,7 @@ export const PageFormFields: React.FC = () => {
         </form>
       </div>
       <AlertProduct open={open} setOpen={setOpen} img={img} />
-      <AlertWeight open={openWeight} setOpen={setOpenWeight} />
+      {/* <AlertWeight open={openWeight} setOpen={setOpenWeight} /> */}
     </>
   );
 };
