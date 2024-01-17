@@ -376,24 +376,24 @@ export const PageFormFields: React.FC = () => {
 
   function isSpecialChar(value: string): boolean {
     return (
-      value.slice()[value.slice().length - 1] === "Ã" ||
-      value.slice()[value.slice().length - 1] === "Õ" ||
-      value.slice()[value.slice().length - 1] === "Â" ||
-      value.slice()[value.slice().length - 1] === "Ê" ||
-      value.slice()[value.slice().length - 1] === "Î" ||
-      value.slice()[value.slice().length - 1] === "Ô" ||
-      value.slice()[value.slice().length - 1] === "Û" ||
-      value.slice()[value.slice().length - 1] === "Á" ||
-      value.slice()[value.slice().length - 1] === "É" ||
-      value.slice()[value.slice().length - 1] === "Í" ||
-      value.slice()[value.slice().length - 1] === "Ó" ||
-      value.slice()[value.slice().length - 1] === "Ú" ||
-      value.slice()[value.slice().length - 1] === "À" ||
-      value.slice()[value.slice().length - 1] === "È" ||
-      value.slice()[value.slice().length - 1] === "Ì" ||
-      value.slice()[value.slice().length - 1] === "Ò" ||
-      value.slice()[value.slice().length - 1] === "Ù" ||
-      value.slice()[value.slice().length - 1] === "Ç" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ã" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Õ" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Â" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ê" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Î" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ô" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Û" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Á" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "É" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Í" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ó" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ú" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "À" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "È" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ì" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ò" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ù" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ç" ||
       value.slice()[value.slice().length - 1] === "." ||
       value.slice()[value.slice().length - 1] === "/" ||
       value.slice()[value.slice().length - 1] === "\\" ||
@@ -406,41 +406,41 @@ export const PageFormFields: React.FC = () => {
   function whichSpecialCharIs(value: string): Product {
     let prod: Product;
     // verifica qual caractere especial é pra subtrair uma unidade a letra base
-    if (value.slice()[value.slice().length - 1] === "Ã") {
+    if (value.slice()[value.slice().length - 1].toUpperCase() === "Ã") {
       prod = searchProduct("A");
-    } else if (value.slice()[value.slice().length - 1] === "Õ") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Õ") {
       prod = searchProduct("O");
-    } else if (value.slice()[value.slice().length - 1] === "Â") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Â") {
       prod = searchProduct("A");
-    } else if (value.slice()[value.slice().length - 1] === "Ê") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ê") {
       prod = searchProduct("E");
-    } else if (value.slice()[value.slice().length - 1] === "Î") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Î") {
       prod = searchProduct("I");
-    } else if (value.slice()[value.slice().length - 1] === "Ô") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ô") {
       prod = searchProduct("O");
-    } else if (value.slice()[value.slice().length - 1] === "Û") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Û") {
       prod = searchProduct("U");
-    } else if (value.slice()[value.slice().length - 1] === "Á") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Á") {
       prod = searchProduct("A");
-    } else if (value.slice()[value.slice().length - 1] === "É") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "É") {
       prod = searchProduct("E");
-    } else if (value.slice()[value.slice().length - 1] === "Í") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Í") {
       prod = searchProduct("I");
-    } else if (value.slice()[value.slice().length - 1] === "Ó") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ó") {
       prod = searchProduct("O");
-    } else if (value.slice()[value.slice().length - 1] === "Ú") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ú") {
       prod = searchProduct("U");
-    } else if (value.slice()[value.slice().length - 1] === "À") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "À") {
       prod = searchProduct("A");
-    } else if (value.slice()[value.slice().length - 1] === "È") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "È") {
       prod = searchProduct("E");
-    } else if (value.slice()[value.slice().length - 1] === "Ì") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ì") {
       prod = searchProduct("I");
-    } else if (value.slice()[value.slice().length - 1] === "Ò") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ò") {
       prod = searchProduct("O");
-    } else if (value.slice()[value.slice().length - 1] === "Ù") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ù") {
       prod = searchProduct("U");
-    } else if (value.slice()[value.slice().length - 1] === "Ç") {
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ç") {
       prod = searchProduct("C");
     } else if (
       value.slice()[value.slice().length - 1] === "." ||
