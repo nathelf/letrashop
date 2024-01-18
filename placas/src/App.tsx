@@ -40,6 +40,7 @@ function App() {
     chart,
     kitAccentuation,
     subtotal,
+    size,
   } = useFormContext();
 
   const [erro, setErro] = useState("");
@@ -222,7 +223,13 @@ function App() {
         <div className="flex flex-1 p-6 flex-col gap-2">
           <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full max-w-[978px] mx-auto">
             <CardItem
-              text={I18n.MAIN_FORM.CARDS.UNIT_PRICE.VALUE}
+              text={
+                size === "30mm"
+                  ? formatMoney(4.9)
+                  : size === "130mm"
+                  ? formatMoney(6.9)
+                  : formatMoney(13.9)
+              }
               title={I18n.MAIN_FORM.CARDS.UNIT_PRICE.TITLE}
               observation={I18n.MAIN_FORM.CARDS.UNIT_PRICE.DESCRIPTION}
             />

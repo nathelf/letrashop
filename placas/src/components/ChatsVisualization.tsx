@@ -149,8 +149,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
       );
     });
 
-    let copyProducts = products;
-
     let productsSelected: ProductList = [];
 
     [...letters].map((letter, index) => {
@@ -251,23 +249,25 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
       }
     });
 
-    let kits = contarUnidades(letters);
+    let _kits = contarUnidades(letters);
 
-    let kit = products.filter((product) => {
-      return (
-        isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
-        isExactMatch(
-          product.name.pt.toLowerCase(),
-          type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
-        ) &&
-        isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
-      );
-    })[0];
+    // if (_kits === kits) {
+    //   let kit = products.filter((product) => {
+    //     return (
+    //       isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
+    //       isExactMatch(
+    //         product.name.pt.toLowerCase(),
+    //         type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
+    //       ) &&
+    //       isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
+    //     );
+    //   })[0];
 
-    for (let index = 0; index < kits; index++) {
-      // add the kits to the chart
-      productsSelected.push(kit);
-    }
+    //   for (let index = 0; index < _kits; index++) {
+    //     // add the kits to the chart
+    //     productsSelected.push(kit);
+    //   }
+    // }
 
     setChart(productsSelected);
 
@@ -287,18 +287,16 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   }, [update]);
 
   useEffect(() => {
-    let productsFiltered = [
-      products.filter((product) => {
-        return (
-          isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
-          isExactMatch(
-            product.name.pt.toLowerCase(),
-            type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
-          ) &&
-          isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
-        );
-      })[0],
-    ];
+    let productsFiltered = products.filter((product) => {
+      return (
+        isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
+        isExactMatch(
+          product.name.pt.toLowerCase(),
+          type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
+        ) &&
+        isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
+      );
+    })[0];
 
     if (kits !== 0) {
       // check if the number of kits is already correct
@@ -315,7 +313,7 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   }, [kits, color, type]);
 
   useEffect(() => {
-    setLetters("520");
+    setLetters("520A");
   }, [products]);
 
   let lines = 0;

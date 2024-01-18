@@ -15,9 +15,11 @@ import { useFormContext } from "../context/useFormContext";
 import { useEffect, useState } from "react";
 import { AlertProduct } from "./AlertProduct";
 import { Product } from "../types/types";
-import { AlertWeight } from "./AlertWeight";
+import { AlertInvalidChar } from "./AlertInvalidChar";
 import { Textarea } from "./ui/textarea";
 import { ColorPickerDialog } from "./ColorPickerDialog";
+import { useToast } from "./ui/use-toast";
+import { ToastAction } from "./ui/toast";
 
 export const PageFormFields: React.FC = () => {
   const {
@@ -38,15 +40,18 @@ export const PageFormFields: React.FC = () => {
     setChart,
   } = useFormContext();
 
+  const { toast } = useToast();
+
   const FONT_TYPE = I18n.MAIN_FORM.VALUES.FONT_TYPE;
   const FONT_SIZE = I18n.MAIN_FORM.VALUES.FONT_SIZE;
   const FONT_COLOR = I18n.MAIN_FORM.VALUES.FONT_COLOR;
 
   const [open, setOpen] = useState(false);
-  const [openWeight, setOpenWeight] = useState(false);
   const [img, setImg] = useState<string | string[]>("");
   const [kits, setKits] = useState(0);
   const [colorBackground, setColorBackGround] = useState("#E0E0E0");
+
+  const [show, setShow] = useState(false);
 
   const [update, setUpdate] = useState(false);
 
@@ -497,6 +502,17 @@ export const PageFormFields: React.FC = () => {
                   }
 
                   if (!regex.test(value.slice())) {
+                    setShow(true);
+                    // console.log("here");
+                    // toast({
+                    //   title: "Scheduled: Catch up ",
+                    //   description: "Friday, February 10, 2023 at 5:57 PM",
+                    //   action: (
+                    //     <ToastAction altText="Goto schedule to undo">
+                    //       Undo
+                    //     </ToastAction>
+                    //   ),
+                    // });
                     return;
                   }
 
@@ -528,6 +544,8 @@ export const PageFormFields: React.FC = () => {
 
                         setLetters("");
                       }
+
+                      console.log("não passou no regex");
 
                       return;
                     }
@@ -800,12 +818,6 @@ export const PageFormFields: React.FC = () => {
                 {/* </div> */}
               </div>
 
-              {/* <ColorPickerDialog
-                  color={colorBackground}
-                  setColor={setColorBackGround}
-                /> */}
-              {/* </div> */}
-
               <div className="flex flex-col space-y-1.5 w-full max-w-full md:max-w-[618px] lg:w-full">
                 <Label htmlFor="cep" className="text-end">
                   {I18n.MAIN_FORM.LABELS.ZIP_CODE}
@@ -839,7 +851,7 @@ export const PageFormFields: React.FC = () => {
         </form>
       </div>
       <AlertProduct open={open} setOpen={setOpen} img={img} />
-      {/* <AlertWeight open={openWeight} setOpen={setOpenWeight} /> */}
+      <AlertInvalidChar open={show} setOpen={setShow} />
     </>
   );
 };
