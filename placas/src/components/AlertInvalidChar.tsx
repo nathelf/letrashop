@@ -93,14 +93,7 @@ export const AlertInvalidChar: React.FC<AlertWeightProps> = ({
                     {"Quadrado"}
                   </TableCell>
                   <TableCell className="text-right p-2 pl-6">
-                    {
-                      <img
-                        src={cancel}
-                        alt="not_available"
-                        width={15}
-                        height={15}
-                      />
-                    }
+                    {<img src={ok} alt="available" width={20} height={20} />}
                   </TableCell>
                   <TableCell className="text-right p-2 pl-6">
                     {<img src={ok} alt="available" width={20} height={20} />}
