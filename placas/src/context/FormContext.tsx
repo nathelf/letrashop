@@ -108,11 +108,22 @@ const FormProvider: FC<{ children: ReactElement }> = ({ children }) => {
     let t = 0;
     if (lettersFiltered.length > 0) {
       chart.map((letter) => {
+        console.log(letter);
         if (letter.id !== -1 && letter.id !== -2) {
           t += parseFloat(letter.variants[0].price) ?? 6.9;
         }
       });
     }
+
+    // if (kitAccentuation.length > 0) {
+    //   kitAccentuation.map((product) => {
+    //     if (product.id !== -1 && product.id !== -2) {
+    //       t += parseFloat(product.variants[0].price) ?? 6.9;
+    //     }
+    //   });
+
+    //   // setSubtotal(t);
+    // }
 
     setSubtotal(t);
 

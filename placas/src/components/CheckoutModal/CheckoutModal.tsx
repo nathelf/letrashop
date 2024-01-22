@@ -173,9 +173,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               if (name !== "" && lastName !== "" && email !== "") {
                 let newChart: ProductList = chart;
 
-                if (kitAccentuation.length > 0) {
-                  newChart = newChart.concat(kitAccentuation);
-                }
+                // if (kitAccentuation.length > 0) {
+                //   newChart = newChart.concat(kitAccentuation);
+                // }
 
                 // send the data to the backend
                 const data = await createDraftOrder({

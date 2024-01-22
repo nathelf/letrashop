@@ -503,7 +503,6 @@ export const PageFormFields: React.FC = () => {
 
                   if (!regex.test(value.slice())) {
                     setShow(true);
-                    // console.log("here");
                     // toast({
                     //   title: "Scheduled: Catch up ",
                     //   description: "Friday, February 10, 2023 at 5:57 PM",
@@ -544,8 +543,6 @@ export const PageFormFields: React.FC = () => {
 
                         setLetters("");
                       }
-
-                      console.log("não passou no regex");
 
                       return;
                     }

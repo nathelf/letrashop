@@ -251,11 +251,11 @@ function App() {
           </div>
 
           <div className="grid gap-4">
-            <CardItem
+            {/* <CardItem
               title={"Peso total"}
               text={`${weight ?? 0} gramas`}
               observation={"Peso aproximado do pedido"}
-            />
+            /> */}
             <CardItem
               title={"Kits de acentuação"}
               text={`${kitAccentuation?.length ?? 0} kit(s)`}
@@ -267,7 +267,7 @@ function App() {
           <Button
             className="flex flex-1 w-full h-14"
             onClick={(e) => {
-              if (cep === "") {
+              if (cep === "" || cep === undefined) {
                 setCepError("CEP é obrigatório");
                 return;
               }

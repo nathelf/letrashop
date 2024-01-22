@@ -250,24 +250,23 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     });
 
     let _kits = contarUnidades(letters);
+    console.log(_kits, kits);
 
-    // if (_kits === kits) {
-    //   let kit = products.filter((product) => {
-    //     return (
-    //       isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
-    //       isExactMatch(
-    //         product.name.pt.toLowerCase(),
-    //         type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
-    //       ) &&
-    //       isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
-    //     );
-    //   })[0];
+    let kit = products.filter((product) => {
+      return (
+        isExactMatch(product.name.pt.toLowerCase(), color.toLowerCase()) &&
+        isExactMatch(
+          product.name.pt.toLowerCase(),
+          type.toLowerCase() === "QUADRADO" ? "130mm" : "30mm"
+        ) &&
+        isExactMatch(product.name.pt.toLowerCase(), "kit pontuacao")
+      );
+    })[0];
 
-    //   for (let index = 0; index < _kits; index++) {
-    //     // add the kits to the chart
-    //     productsSelected.push(kit);
-    //   }
-    // }
+    for (let index = 0; index < _kits; index++) {
+      // add the kits to the chart
+      productsSelected.push(kit);
+    }
 
     setChart(productsSelected);
 
@@ -315,8 +314,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
   useEffect(() => {
     setLetters("520A");
   }, [products]);
-
-  let lines = 0;
 
   return (
     <Card className="w-full max-w-full md:max-w-[618px] lg:max-w-full lg:w-full h-auto">
