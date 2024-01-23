@@ -81,9 +81,17 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     contadorCircunflexo = contadorCircunflexo + countOccurrences(texto, "Û");
     contadorPonto = countOccurrences(texto, ".");
     contadorTraco = countOccurrences(texto, "-");
+    contadorVirgula = countOccurrences(texto, ",");
+
+    contadorVirgula = contadorVirgula + countOccurrences(texto, "´");
+    contadorVirgula = contadorVirgula + countOccurrences(texto, "`");
+
+    contadorVirgula = contadorVirgula + countOccurrences(texto, ";");
+    contadorPonto = contadorPonto + countOccurrences(texto, ";");
+    contadorPonto = contadorPonto + countOccurrences(texto, ":") * 2;
+
     contadorTraco = contadorTraco + countOccurrences(texto, "Ã");
     contadorTraco = contadorTraco + countOccurrences(texto, "Õ");
-    contadorVirgula = countOccurrences(texto, ",");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Á");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "É");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Í");
@@ -250,7 +258,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     });
 
     let _kits = contarUnidades(letters);
-    console.log(_kits, kits);
 
     let kit = products.filter((product) => {
       return (

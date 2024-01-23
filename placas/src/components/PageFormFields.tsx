@@ -84,9 +84,10 @@ export const PageFormFields: React.FC = () => {
       (size === "30mm" && type === "QUADRADO") ||
       (size === "130mm" && type === "REDONDO")
     ) {
-      regex = /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ -\/\\,.^]*$/;
+      regex =
+        /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ -\/\\,.^;`´:]*$/;
     } else {
-      regex = /^[0-9 -.,/\\]*$/;
+      regex = /^[0-9 -.,/\\;`´:]*$/;
     }
 
     copyLetters = copyLetters
@@ -258,9 +259,17 @@ export const PageFormFields: React.FC = () => {
     contadorCircunflexo = contadorCircunflexo + countOccurrences(texto, "Û");
     contadorPonto = countOccurrences(texto, ".");
     contadorTraco = countOccurrences(texto, "-");
+    contadorVirgula = countOccurrences(texto, ",");
+
+    contadorVirgula = contadorVirgula + countOccurrences(texto, "´");
+    contadorVirgula = contadorVirgula + countOccurrences(texto, "`");
+
+    contadorVirgula = contadorVirgula + countOccurrences(texto, ";");
+    contadorPonto = contadorPonto + countOccurrences(texto, ";");
+    contadorPonto = contadorPonto + countOccurrences(texto, ":") * 2;
+
     contadorTraco = contadorTraco + countOccurrences(texto, "Ã");
     contadorTraco = contadorTraco + countOccurrences(texto, "Õ");
-    contadorVirgula = countOccurrences(texto, ",");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Á");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "É");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Í");
@@ -404,7 +413,11 @@ export const PageFormFields: React.FC = () => {
       value.slice()[value.slice().length - 1] === "\\" ||
       value.slice()[value.slice().length - 1] === "^" ||
       value.slice()[value.slice().length - 1] === "-" ||
-      value.slice()[value.slice().length - 1] === ","
+      value.slice()[value.slice().length - 1] === "," ||
+      value.slice()[value.slice().length - 1] === ";" ||
+      value.slice()[value.slice().length - 1] === "´" ||
+      value.slice()[value.slice().length - 1] === "`" ||
+      value.slice()[value.slice().length - 1] === ":"
     );
   }
 
@@ -453,7 +466,11 @@ export const PageFormFields: React.FC = () => {
       value.slice()[value.slice().length - 1] === "\\" ||
       value.slice()[value.slice().length - 1] === "^" ||
       value.slice()[value.slice().length - 1] === "-" ||
-      value.slice()[value.slice().length - 1] === ","
+      value.slice()[value.slice().length - 1] === "," ||
+      value.slice()[value.slice().length - 1] === ";" ||
+      value.slice()[value.slice().length - 1] === "´" ||
+      value.slice()[value.slice().length - 1] === "`" ||
+      value.slice()[value.slice().length - 1] === ":"
     ) {
       prod = getKits();
     } else {
@@ -496,9 +513,9 @@ export const PageFormFields: React.FC = () => {
                     (size === "130mm" && type === "REDONDO")
                   ) {
                     regex =
-                      /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ \n-\/\\,.^]*$/;
+                      /^[A-Za-z0-9áéíóúÁÉÍÓÚñÑçÇâêîôûÂÊÎÔÛàèìòùÀÈÌÒÙãõÃÕ \n-\/\\,.^;`´:]*$/;
                   } else {
-                    regex = /^[0-9 \n-.,/\\]*$/;
+                    regex = /^[0-9 \n-.,/\\;`´:]*$/;
                   }
 
                   if (!regex.test(value.slice())) {
@@ -580,7 +597,11 @@ export const PageFormFields: React.FC = () => {
                             value.slice()[value.slice().length - 1] === "\\" ||
                             value.slice()[value.slice().length - 1] === "^" ||
                             value.slice()[value.slice().length - 1] === "-" ||
-                            value.slice()[value.slice().length - 1] === ","
+                            value.slice()[value.slice().length - 1] === "," ||
+                            value.slice()[value.slice().length - 1] === ";" ||
+                            value.slice()[value.slice().length - 1] === "´" ||
+                            value.slice()[value.slice().length - 1] === "`" ||
+                            value.slice()[value.slice().length - 1] === ":"
                           )
                         ) {
                           // se prod for undefined então é um caractere especial sozinho
@@ -647,7 +668,15 @@ export const PageFormFields: React.FC = () => {
                               "^" ||
                             letters.slice()[letters.slice().length - 1] ===
                               "-" ||
-                            letters.slice()[letters.slice().length - 1] === ","
+                            letters.slice()[letters.slice().length - 1] ===
+                              "," ||
+                            letters.slice()[letters.slice().length - 1] ===
+                              ";" ||
+                            letters.slice()[letters.slice().length - 1] ===
+                              "´" ||
+                            letters.slice()[letters.slice().length - 1] ===
+                              "`" ||
+                            letters.slice()[letters.slice().length - 1] === ":"
                           )
                         ) {
                           if (prod !== undefined) {
@@ -748,7 +777,7 @@ export const PageFormFields: React.FC = () => {
                       </SelectItem>
                     ) : // regex se tem apenas números
                     size === "130mm" &&
-                      new RegExp(/^[0-9 -.,/\\]*$/).test(letters) ? (
+                      new RegExp(/^[0-9 -.,/\\´`:]*$/).test(letters) ? (
                       <>
                         <SelectItem
                           key={FONT_TYPE.TYPE_1.KEY}
@@ -764,7 +793,7 @@ export const PageFormFields: React.FC = () => {
                         </SelectItem>
                       </>
                     ) : size === "130mm" &&
-                      !new RegExp(/^[0-9 -.,/\\]*$/).test(letters) ? (
+                      !new RegExp(/^[0-9 -.,/\\´`:]*$/).test(letters) ? (
                       <>
                         <SelectItem
                           key={FONT_TYPE.TYPE_1.KEY}
