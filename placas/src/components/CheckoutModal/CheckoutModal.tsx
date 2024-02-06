@@ -173,9 +173,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               if (name !== "" && lastName !== "" && email !== "") {
                 let newChart: ProductList = chart;
 
-                // if (kitAccentuation.length > 0) {
-                //   newChart = newChart.concat(kitAccentuation);
-                // }
+                if (kitAccentuation.length > 0) {
+                  newChart = newChart.concat(kitAccentuation);
+                }
 
                 // send the data to the backend
                 const data = await createDraftOrder({
@@ -183,11 +183,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   contact_lastname: lastName,
                   contact_name: name,
                   payment_status: "unpaid",
-                  products: newChart.map((product) => ({
-                    product_id: product.id,
-                    quantity: 1,
-                    variant_id: product.variants[0].id,
-                  })),
+                  products: newChart.reduce(
+                    (accumulator: any, currentValue) => {
+                      if (accumulator[currentValue.id]) {
+                        accumulator[currentValue.id].quantity += 1;
+                      } else {
+                        accumulator[currentValue.id] = {
+                          ...{
+                            product_id: currentValue.id,
+                            quantity: 1,
+                            variant_id: currentValue.variants[0].id,
+                          },
+                        };
+                      }
+                      return accumulator;
+                    },
+                    {}
+                  ),
                   shipping: {
                     cost: shippingCost.toString(),
                     // check if the address has only empty strings

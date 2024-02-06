@@ -103,11 +103,12 @@ export const PageFormFields: React.FC = () => {
       type !== undefined &&
       products.length > 0
     ) {
-      if (getKits()?.variants[0].inventory_levels[0].stock !== null) {
-        if (ktNeeded > (getKits().variants[0].inventory_levels[0].stock ?? 0)) {
+      let kit = getKits();
+      if (kit?.variants[0].inventory_levels[0].stock !== null) {
+        if (ktNeeded > (kit.variants[0].inventory_levels[0].stock ?? 0)) {
           // abre o modal de produto fora de estoque
 
-          setImg(getKits().images[0]?.src ?? getKits().name.pt);
+          setImg(kit.images[0]?.src ?? kit.name.pt);
           // remove the special characters
           regex = /^[A-Za-z0-9]*$/;
           copyLetters = copyLetters

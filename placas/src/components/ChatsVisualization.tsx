@@ -397,8 +397,9 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
                     key={index}
                     src={product?.images[0]?.src ?? ""}
                     alt={product?.name?.pt}
-                    className="w-[40px] h-[40px] md:w-[60px] md:h-[60px] lg:w-[90px] lg:h-[90px] p-1 object-content"
+                    className="w-auto h-[40px] md:h-[60px] p-1 object-contain"
                   />
+                  // w-[40px] md:w-[60px] lg:w-[90px] lg:h-[90px]
                 );
               }
             })
