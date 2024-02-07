@@ -69,7 +69,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     let contadorTraco = 0;
     let contadorBarra = 0;
     let contadorCircunflexo = 0;
-    let contadorCedilha = 0;
 
     contadorBarra = countOccurrences(texto, "/");
     contadorBarra = contadorBarra + countOccurrences(texto, "\\");
@@ -102,7 +101,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ì");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ò");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ù");
-    contadorCedilha = countOccurrences(texto, "Ç");
 
     // 3 pontos
     // 1 acento circunflexo
@@ -118,7 +116,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
       Math.ceil(contadorPonto / 3),
       Math.ceil(contadorTraco / 1),
       Math.ceil(contadorVirgula / 1),
-      Math.ceil(contadorCedilha / 1),
     ].sort((a, b) => b - a)[0];
 
     setKits(kitsNeeded);
@@ -197,14 +194,6 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
           } else if (letter === "Ô" && product.name.pt.split("-")[1] === "O") {
             productsSelected.push(product);
           } else if (letter === "Û" && product.name.pt.split("-")[1] === "U") {
-            productsSelected.push(product);
-          } else if (letter === "Ç" && product.name.pt.split("-")[1] === "C") {
-            productsSelected.push(product);
-          } else if (letter === "Ç" && product.name.pt.split("-")[1] === "C") {
-            productsSelected.push(product);
-          } else if (letter === "Ç" && product.name.pt.split("-")[1] === "C") {
-            productsSelected.push(product);
-          } else if (letter === "Ç" && product.name.pt.split("-")[1] === "C") {
             productsSelected.push(product);
           }
         });

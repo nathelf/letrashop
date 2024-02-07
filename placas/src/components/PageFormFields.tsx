@@ -248,7 +248,6 @@ export const PageFormFields: React.FC = () => {
     let contadorTraco = 0;
     let contadorBarra = 0;
     let contadorCircunflexo = 0;
-    let contadorCedilha = 0;
 
     contadorBarra = countOccurrences(texto, "/");
     contadorBarra = contadorBarra + countOccurrences(texto, "\\");
@@ -281,14 +280,12 @@ export const PageFormFields: React.FC = () => {
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ì");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ò");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ù");
-    contadorCedilha = countOccurrences(texto, "Ç");
 
     // 3 pontos
     // 1 acento circunflexo
     // 1 virgula
     // 1 hifen
     // 1 barra invertida
-    // 1 cedilha
 
     // cria um vetor com a quantidade de kits para cada caractere, ordena do maior para o menor e pega o primeiro valor (maior quantidade de kits necessários)
     const kitsNeeded = [
@@ -297,7 +294,6 @@ export const PageFormFields: React.FC = () => {
       Math.ceil(contadorPonto / 3),
       Math.ceil(contadorTraco / 1),
       Math.ceil(contadorVirgula / 1),
-      Math.ceil(contadorCedilha / 1),
     ].sort((a, b) => b - a)[0];
 
     return kitsNeeded;
@@ -408,7 +404,6 @@ export const PageFormFields: React.FC = () => {
       value.slice()[value.slice().length - 1].toUpperCase() === "Ì" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ò" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ù" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "Ç" ||
       value.slice()[value.slice().length - 1] === "." ||
       value.slice()[value.slice().length - 1] === "/" ||
       value.slice()[value.slice().length - 1] === "\\" ||
@@ -459,8 +454,6 @@ export const PageFormFields: React.FC = () => {
       prod = searchProduct("O");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ù") {
       prod = searchProduct("U");
-    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ç") {
-      prod = searchProduct("C");
     } else if (
       value.slice()[value.slice().length - 1] === "." ||
       value.slice()[value.slice().length - 1] === "/" ||
