@@ -2,7 +2,7 @@ import { ProductList } from "../types/types";
 import { I18n } from "../assets/resources";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormContext } from "../context/useFormContext";
 
 import { ColorPickerDialog } from "./ColorPickerDialog";
@@ -15,6 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Slider } from "./ui/slider";
+import { cn } from "../lib/utils";
 
 type ChartsVisualizationProps = {
   products: ProductList;
@@ -44,8 +46,11 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     setColor,
   } = useFormContext();
   const [colorBackground, setColorBackGround] = useState("#E0E0E0");
+  const [fontSize, setFontSize] = useState(50);
 
   const [kits, setKits] = useState(0);
+
+  const divRef = useRef(null);
 
   function countOccurrences(str: string, subStr: string) {
     var count = 0;
@@ -92,11 +97,11 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     contadorTraco = contadorTraco + countOccurrences(texto, "Ã");
     contadorTraco = contadorTraco + countOccurrences(texto, "Õ");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Á");
+    contadorVirgula = contadorVirgula + countOccurrences(texto, "À");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "É");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Í");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ó");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ú");
-    contadorVirgula = contadorVirgula + countOccurrences(texto, "À");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "È");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ì");
     contadorVirgula = contadorVirgula + countOccurrences(texto, "Ò");
@@ -162,39 +167,106 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
           if (letter === product.name.pt.split("-")[1]) {
             productsSelected.push(product);
           } else if (letter === "Ã" && product.name.pt.split("-")[1] === "A") {
-            productsSelected.push(product);
-          } else if (letter === "Õ" && product.name.pt.split("-")[1] === "O") {
+            productsSelected.push({
+              ...product,
+              accentuation: 1,
+            });
+          } else if (letter === "Â" && product.name.pt.split("-")[1] === "A") {
+            productsSelected.push({
+              ...product,
+              accentuation: 2,
+            });
+          } else if (letter === "À" && product.name.pt.split("-")[1] === "A") {
+            productsSelected.push({
+              ...product,
+              accentuation: 3,
+            });
             productsSelected.push(product);
           } else if (letter === "Á" && product.name.pt.split("-")[1] === "A") {
-            productsSelected.push(product);
-          } else if (letter === "É" && product.name.pt.split("-")[1] === "E") {
-            productsSelected.push(product);
-          } else if (letter === "Í" && product.name.pt.split("-")[1] === "I") {
-            productsSelected.push(product);
-          } else if (letter === "Ó" && product.name.pt.split("-")[1] === "O") {
-            productsSelected.push(product);
-          } else if (letter === "Ú" && product.name.pt.split("-")[1] === "U") {
-            productsSelected.push(product);
-          } else if (letter === "À" && product.name.pt.split("-")[1] === "A") {
-            productsSelected.push(product);
-          } else if (letter === "È" && product.name.pt.split("-")[1] === "E") {
-            productsSelected.push(product);
-          } else if (letter === "Ì" && product.name.pt.split("-")[1] === "I") {
-            productsSelected.push(product);
-          } else if (letter === "Ò" && product.name.pt.split("-")[1] === "O") {
-            productsSelected.push(product);
-          } else if (letter === "Ù" && product.name.pt.split("-")[1] === "U") {
-            productsSelected.push(product);
-          } else if (letter === "Â" && product.name.pt.split("-")[1] === "A") {
-            productsSelected.push(product);
+            productsSelected.push({
+              ...product,
+              accentuation: 4,
+            });
+          } else if (letter === "Ẽ" && product.name.pt.split("-")[1] === "E") {
+            productsSelected.push({
+              ...product,
+              accentuation: 1,
+            });
           } else if (letter === "Ê" && product.name.pt.split("-")[1] === "E") {
-            productsSelected.push(product);
+            productsSelected.push({
+              ...product,
+              accentuation: 2,
+            });
+          } else if (letter === "È" && product.name.pt.split("-")[1] === "E") {
+            productsSelected.push({
+              ...product,
+              accentuation: 3,
+            });
+          } else if (letter === "É" && product.name.pt.split("-")[1] === "E") {
+            productsSelected.push({
+              ...product,
+              accentuation: 4,
+            });
+          } else if (letter === "Ĩ" && product.name.pt.split("-")[1] === "I") {
+            productsSelected.push({
+              ...product,
+              accentuation: 1,
+            });
           } else if (letter === "Î" && product.name.pt.split("-")[1] === "I") {
-            productsSelected.push(product);
+            productsSelected.push({
+              ...product,
+              accentuation: 2,
+            });
+          } else if (letter === "Ì" && product.name.pt.split("-")[1] === "I") {
+            productsSelected.push({
+              ...product,
+              accentuation: 3,
+            });
+          } else if (letter === "Í" && product.name.pt.split("-")[1] === "I") {
+            productsSelected.push({
+              ...product,
+              accentuation: 4,
+            });
+          } else if (letter === "Õ" && product.name.pt.split("-")[1] === "O") {
+            productsSelected.push({
+              ...product,
+              accentuation: 1,
+            });
           } else if (letter === "Ô" && product.name.pt.split("-")[1] === "O") {
-            productsSelected.push(product);
+            productsSelected.push({
+              ...product,
+              accentuation: 2,
+            });
+          } else if (letter === "Ò" && product.name.pt.split("-")[1] === "O") {
+            productsSelected.push({
+              ...product,
+              accentuation: 3,
+            });
+          } else if (letter === "Ó" && product.name.pt.split("-")[1] === "O") {
+            productsSelected.push({
+              ...product,
+              accentuation: 4,
+            });
+          } else if (letter === "Ũ" && product.name.pt.split("-")[1] === "U") {
+            productsSelected.push({
+              ...product,
+              accentuation: 1,
+            });
           } else if (letter === "Û" && product.name.pt.split("-")[1] === "U") {
-            productsSelected.push(product);
+            productsSelected.push({
+              ...product,
+              accentuation: 2,
+            });
+          } else if (letter === "Ù" && product.name.pt.split("-")[1] === "U") {
+            productsSelected.push({
+              ...product,
+              accentuation: 3,
+            });
+          } else if (letter === "Ú" && product.name.pt.split("-")[1] === "U") {
+            productsSelected.push({
+              ...product,
+              accentuation: 4,
+            });
           }
         });
       } else {
@@ -311,6 +383,30 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
     setLetters("520A");
   }, [products]);
 
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        // Assuming you want to track the border box size:
+        // setHeight(entry.contentRect.height);
+
+        if (entry.contentRect.height < 200) {
+          setFontSize(entry.contentRect.height);
+        }
+      }
+    });
+
+    if (divRef.current) {
+      resizeObserver.observe(divRef.current);
+    }
+
+    // Clean up
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, []); // Empty dependency array means this effect runs once on mount
+
   return (
     <Card className="w-full max-w-full md:max-w-[618px] lg:max-w-full lg:w-full h-auto">
       <CardHeader className="flex flex-1 items-center gap-8 flex-col md:flex-row lg:flex-row p-2 justify-between">
@@ -319,11 +415,28 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
           color={colorBackground}
           setColor={setColorBackGround}
         />
-        <div className="flex flex-1 flex-col xl:flex-row lg:flex-row md:flex-row sm:flex-col gap-4 items-center justify-end">
+        {/* <div className="flex max-w-[200px] w-full flex-1 flex-col gap-2 items-center justify-end">
           <Label
-            htmlFor="fontType"
-            className="text-end w-full flex-grow min-w-[200px]"
+            htmlFor="fontSize"
+            className="text-end w-full flex-grow text-xs"
           >
+            {"Tam. visualização"}
+          </Label>
+          <Slider
+            defaultValue={[50]}
+            max={100}
+            min={10}
+            step={1}
+            value={[fontSize]}
+            onValueChange={(e) => {
+              setFontSize(e[0]);
+            }}
+            className={"w-full "}
+          />
+        </div> */}
+
+        <div className="flex flex-1 flex-col xl:flex-row lg:flex-row md:flex-row sm:flex-col gap-4 items-center justify-end">
+          <Label htmlFor="fontType" className="text-end w-full flex-grow">
             {I18n.MAIN_FORM.LABELS.FONT_COLOR}
           </Label>
           <Select
@@ -352,11 +465,14 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
       <Separator />
       {/* break-words  */}
       <CardContent
-        className="flex flex-1 w-full whitespace-pre-wrap max-w-[804px] h-full min-h-[120px] justify-center items-center content-center gap-6 p-2"
+        className="flex flex-1 w-full whitespace-pre-wrap max-w-[804px] h-full min-h-[120px] justify-center items-center content-center gap-6 p-2 "
         style={{ background: colorBackground }}
       >
         {/* */}
-        <div className="flex overflow-auto flex-wrap break-words flex-row whitespace-pre-wrap w-full h-full justify-center items-center content-center p-4">
+        <div
+          className="flex overflow-auto flex-wrap break-words flex-row whitespace-pre-wrap w-full h-full justify-center items-center content-center p-4 resize-y min-h-[92px]"
+          ref={divRef}
+        >
           {products?.length === 0 ? (
             <Skeleton className="flex flex-wrap flex-1 max-w-[804px] min-h-[120px] h-full w-full bg-slate-500" />
           ) : chart?.length > 0 ? (
@@ -384,9 +500,14 @@ export const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({
                 return (
                   <img
                     key={index}
-                    src={product?.images[0]?.src ?? ""}
+                    src={
+                      product?.images[
+                        product?.accentuation ? product?.accentuation : 0
+                      ]?.src ?? ""
+                    }
                     alt={product?.name?.pt}
-                    className="w-auto h-[40px] md:h-[60px] p-1 object-contain"
+                    style={{ width: fontSize }} // Adjust height as needed or use Tailwind classes
+                    className="h-[40px] md:h-[60px] max-h-[100px] p-1 object-contain"
                   />
                   // w-[40px] md:w-[60px] lg:w-[90px] lg:h-[90px]
                 );

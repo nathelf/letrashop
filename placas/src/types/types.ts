@@ -81,6 +81,7 @@ export type Product = {
   tags: string;
   images: Image[];
   categories: any[]; // Replace with actual type
+  accentuation?: number; // Custom field
 };
 
 export type Address = {

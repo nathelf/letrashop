@@ -339,7 +339,7 @@ export const PageFormFields: React.FC = () => {
   function changeStock(
     product: Product,
     quantity: number,
-    dontOpenTheModal?: boolean = false
+    dontOpenTheModal: boolean = false
   ) {
     // encontra o index do produto
     let index = productsInStock.findIndex(
@@ -387,21 +387,23 @@ export const PageFormFields: React.FC = () => {
 
   function isSpecialChar(value: string): boolean {
     return (
-      value.slice()[value.slice().length - 1].toUpperCase() === "Ã" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "Õ" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Â" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ã" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "À" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Á" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Õ" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ẽ" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ê" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "È" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "É" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ĩ" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Î" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Í" ||
+      value.slice()[value.slice().length - 1].toUpperCase() === "Ì" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ô" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Û" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "Á" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "É" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "Í" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ó" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ú" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "À" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "È" ||
-      value.slice()[value.slice().length - 1].toUpperCase() === "Ì" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ò" ||
       value.slice()[value.slice().length - 1].toUpperCase() === "Ù" ||
       value.slice()[value.slice().length - 1] === "." ||
@@ -422,10 +424,14 @@ export const PageFormFields: React.FC = () => {
     // verifica qual caractere especial é pra subtrair uma unidade a letra base
     if (value.slice()[value.slice().length - 1].toUpperCase() === "Ã") {
       prod = searchProduct("A");
-    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Õ") {
-      prod = searchProduct("O");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Â") {
       prod = searchProduct("A");
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "À") {
+      prod = searchProduct("A");
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Á") {
+      prod = searchProduct("A");
+    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Õ") {
+      prod = searchProduct("O");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ê") {
       prod = searchProduct("E");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Î") {
@@ -434,8 +440,6 @@ export const PageFormFields: React.FC = () => {
       prod = searchProduct("O");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Û") {
       prod = searchProduct("U");
-    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Á") {
-      prod = searchProduct("A");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "É") {
       prod = searchProduct("E");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Í") {
@@ -444,8 +448,6 @@ export const PageFormFields: React.FC = () => {
       prod = searchProduct("O");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ú") {
       prod = searchProduct("U");
-    } else if (value.slice()[value.slice().length - 1].toUpperCase() === "À") {
-      prod = searchProduct("A");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "È") {
       prod = searchProduct("E");
     } else if (value.slice()[value.slice().length - 1].toUpperCase() === "Ì") {
@@ -514,15 +516,6 @@ export const PageFormFields: React.FC = () => {
 
                   if (!regex.test(value.slice())) {
                     setShow(true);
-                    // toast({
-                    //   title: "Scheduled: Catch up ",
-                    //   description: "Friday, February 10, 2023 at 5:57 PM",
-                    //   action: (
-                    //     <ToastAction altText="Goto schedule to undo">
-                    //       Undo
-                    //     </ToastAction>
-                    //   ),
-                    // });
                     return;
                   }
 
